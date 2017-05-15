@@ -1,0 +1,39 @@
+<ion-view>
+    <ion-content class="login-screen">
+
+        <form class="login-form" ng-submit="register()">
+            <div class="list">
+                <label class="item item-input">
+                  <input type="text" placeholder="Email" ng-model="user.email">
+                </label>
+                <label class="item item-input">
+                  <input type="password" placeholder="Password" ng-model="user.password">
+                </label>
+                <label class="item item-input">
+                  <input type="password" placeholder="Confirm Password" ng-model="user.confirm_password">
+                </label>                    
+                <div class="item login-button">
+                    <button class="button button-block button-balanced">
+                      Register
+                    </button>         
+                </div>
+
+                <div class="item login-error" ng-if="error[form.currentForm].length > 0">
+                    <p ng-repeat="error in error[form.currentForm]">{{error[0]}}</p>
+                </div>
+            </div>
+
+        </form>
+
+
+        <div class="secondary-action">
+            <button class="button button-block button-balanced" ng-click="form.currentForm = 'login'">
+              Login
+            </button>              
+        </div>
+
+
+    </ion-content>
+    
+
+</ion-view>

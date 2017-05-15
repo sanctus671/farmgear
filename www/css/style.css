@@ -1,1 +1,253 @@
-/* Empty. Add your own CSS if you like */
+
+
+
+/* General
+==================================*/
+
+.button.button-default{
+ border:1px #ccc solid;   
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6,input, button, select, textarea,body, *{
+    font-family:"Lato","Helvetica Neue", "Roboto", sans-serif;
+}
+h1{ 
+        font-weight: 100;
+        color:white;
+            font-size: 80px;
+}
+
+ion-content{
+        background-color: #ECECEC;
+}
+
+
+/* Utilities
+==================================*/
+p {
+    color: #555;
+    margin: 0 0 25px;
+}
+
+.scroll {
+    height: 100%;
+}
+
+
+img {
+    -webkit-user-drag: none;
+}
+
+
+.tabs.tabs-light{
+}
+
+.highcharts-button rect{
+        fill:transparent;
+        stroke:transparent;
+}
+
+.modal-button, .modal-button2{
+        font-weight: 100;
+    font-size: 20px;
+    line-height: 32px;
+    margin-left: 10px;
+}
+
+.modal-button2{
+    margin-left: 0px;
+    display: flex;
+    position: absolute;
+    right: 15px;  
+}
+
+input[type=range] {
+  pointer-events: none;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  pointer-events:auto;
+}
+
+
+/* Menu
+==================================*/
+
+
+
+.platform-android .bar:not(.bar-footer){
+    height:54px !important;
+}
+
+.platform-android .bar:not(.bar-footer) .title {
+ height:54px !important;
+ line-height:48px !important;
+
+}
+
+
+.platform-android .bar:not(.bar-footer) .button{
+        min-height: 54px !important;
+    max-height:54px !important;
+}
+
+.platform-android .modal-button, .platform-android .modal-button2{
+        line-height: 42px;
+}
+
+.main-bar.bar:not(.bar-footer) .buttons-left .button:before{
+   font-size: 28px;
+}
+
+.main-bar.bar:not(.bar-footer) .buttons-left .button:active{
+    opacity:0.3;
+}
+
+.platform-android .main-bar.bar:not(.bar-footer) .buttons-right .button{
+    line-height:40px;
+}
+
+.platform-android .main-bar.bar:not(.bar-footer) .buttons-left .button{
+    line-height:40px;
+}
+
+
+.platform-android .has-header{
+    top:54px !important;
+}
+
+
+.bar.bar-balanced{
+    background-color:#69cf8d;
+    border-color:#69cf8d;
+        background-size: 100% 0px;
+        box-shadow: 0 1px 3px rgba(0,0,0,.1);
+}
+
+.button.button-balanced {
+    background-color:#69cf8d;
+}
+
+.bar .title{
+    font-family:"Lato","Helvetica Neue", "Roboto", sans-serif;
+    font-weight: 300;
+    font-size: 30px !important;
+    line-height: 38px;
+}
+
+
+/* Login
+==================================*/
+
+.login-screen{
+    background-color:#00561D;
+    text-align:center;
+}
+
+.login-screen .login-header{
+    margin-top: 20%;
+}
+
+.login-screen h1{
+ font-size:60px;   
+}
+
+.login-form{
+    width:70%;
+    margin:0 auto;
+    min-height: 262.5px;
+    max-height:262.5px;
+}
+
+.login-form .item-input{
+    background-color: transparent;
+    border: none;
+        padding: 10px 10px;
+}
+
+.login-form .item-input input{
+    border-bottom:1px solid rgba(255,255,255,0.5);
+    font-size:18px;
+    color:white;
+}
+
+.login-form .item-input input:focus { 
+    border-bottom:1px solid rgba(255,255,255,1);
+}
+
+.login-form input::-webkit-input-placeholder{ /* Chrome/Opera/Safari */
+  color: rgba(255,255,255,0.5);
+}
+
+
+
+.login-form .item{
+    background-color: transparent;
+    border: none;
+    padding: 10px;
+}
+
+
+
+.login-form .login-button{
+    margin-top:10px;
+}
+.login-form .login-button .button.button-balanced{
+    background-color: rgba(255,255,255,0.4);
+    font-size: 18px;
+    line-height: 20px;
+    height: 50px;
+    letter-spacing: 1px;    
+}
+
+.login-form .login-button .button.button-balanced.activated{
+    border:none;
+    opacity:0.8;
+}
+
+.login-form .login-text{
+        padding-top: 0px;
+
+}
+
+.login-form .login-error{
+        margin-top: -10px;
+    color:white;
+}
+
+.login-form .login-error p{
+    color:white;
+}
+
+.login-form .login-text a{
+    color:rgba(255,255,255,0.5);
+    font-size:18px;
+}
+
+.login-form .login-text a.activated{
+    color:white;
+}
+
+.login-screen .secondary-action{
+    width: 70%;
+    margin: 0 auto;
+    padding: 10px;
+    margin-top: 20%;    
+}
+
+.login-screen .secondary-action .button.button-balanced{
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 18px;
+    height: 50px;    
+}
+
+.login-screen .secondary-action .button.button-balanced.activated{
+    background-color:transparent;
+    border-color:white;
+    color:white;
+}
+.login-form .item-input{
+    color:rgba(255,255,255,0.5);
+}
+
