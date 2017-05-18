@@ -9,7 +9,7 @@
 }
 
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6,input, button, select, textarea,body, *{
-    font-family:"Lato","Helvetica Neue", "Roboto", sans-serif;
+    font-family:"Roboto", sans-serif;
 }
 h1{ 
         font-weight: 100;
@@ -26,7 +26,6 @@ ion-content{
 ==================================*/
 p {
     color: #555;
-    margin: 0 0 25px;
 }
 
 .scroll {
@@ -38,28 +37,6 @@ img {
     -webkit-user-drag: none;
 }
 
-
-.tabs.tabs-light{
-}
-
-.highcharts-button rect{
-        fill:transparent;
-        stroke:transparent;
-}
-
-.modal-button, .modal-button2{
-        font-weight: 100;
-    font-size: 20px;
-    line-height: 32px;
-    margin-left: 10px;
-}
-
-.modal-button2{
-    margin-left: 0px;
-    display: flex;
-    position: absolute;
-    right: 15px;  
-}
 
 input[type=range] {
   pointer-events: none;
@@ -118,23 +95,36 @@ input[type=range]::-webkit-slider-thumb {
 
 
 .bar.bar-balanced{
-    background-color:#69cf8d;
-    border-color:#69cf8d;
-        background-size: 100% 0px;
-        box-shadow: 0 1px 3px rgba(0,0,0,.1);
+    background-color:#00561D;
+    border-color:#00561D;
+    background-size: 100% 0px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.1);
 }
 
 .button.button-balanced {
-    background-color:#69cf8d;
+    background-color:#00561D;
 }
 
 .bar .title{
-    font-family:"Lato","Helvetica Neue", "Roboto", sans-serif;
-    font-weight: 300;
-    font-size: 30px !important;
-    line-height: 38px;
+    font-family:"Roboto", sans-serif;
+    font-weight: 400;
+    font-size: 20px !important;
+    line-height: 40px;
 }
 
+@media screen and (min-width:768px){
+  .menu-content {
+    -webkit-transform: translate3d(0px, 0px, 0px) !important;
+    width: calc(100% - 230px) !important;
+  } 
+
+  .bar-header button.ion-navicon {
+    display: none;
+  }
+
+  
+}
+  
 
 /* Login
 ==================================*/
@@ -145,7 +135,12 @@ input[type=range]::-webkit-slider-thumb {
 }
 
 .login-screen .login-header{
-    margin-top: 20%;
+    margin-top: 15%;
+}
+
+.login-screen img{
+    max-width:300px;
+    padding-bottom:20px;
 }
 
 .login-screen h1{
@@ -157,6 +152,18 @@ input[type=range]::-webkit-slider-thumb {
     margin:0 auto;
     min-height: 262.5px;
     max-height:262.5px;
+}
+
+.login-form.register-form{
+    margin-top:20%;
+        max-height: none;
+        min-height: 365px;
+}
+
+.register-success{
+    color: white;
+    font-size: 18px;
+    line-height: 25px;    
 }
 
 .login-form .item-input{
@@ -250,4 +257,112 @@ input[type=range]::-webkit-slider-thumb {
 .login-form .item-input{
     color:rgba(255,255,255,0.5);
 }
+
+/* Home
+==================================*/
+
+.home-screen .category-list{
+}
+
+.home-screen .category-list .category-item, .category-title{
+    position: relative;   
+    background-size: cover;
+    background-repeat:no-repeat;
+    background-position:center center;
+    min-height: 100px;
+    text-align: center;
+        border-bottom: 1px solid rgb(216, 216, 216);
+   
+}
+
+.home-screen .category-list .category-item p, .category-title p {
+    font-size: 30px;
+    color: white;
+    line-height: 30px;
+    margin: 0px;
+    padding-top: 35px;
+    padding-bottom: 35px;    
+}
+
+
+/* Category
+==================================*/
+
+.category-description{
+        padding: 20px;
+}
+
+.product-list{
+    
+}
+
+.product-item{
+margin: 20px 10px;
+    background-color: rgb(242, 242, 242);
+    border: 1px solid rgba(204, 204, 204, 0.8);
+    padding-bottom: 30px;
+}
+
+.product-item img{
+    max-width:100%;
+    
+}
+
+.product-title{
+    height: 20px;
+    padding:0px 15px;
+    margin-top:10px;
+}
+
+.product-title .product-name{
+float: left;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.product-title .product-price{
+float: right;
+    font-size: 18px;
+    font-weight: bold;
+    color: #00561d;
+}
+
+.product-short-description{
+    padding: 0px 15px;
+    margin-top: 10px;
+    color: #5f5f5f;
+}
+
+.product-options-open{
+    background-color: #444;
+    color: white;
+    font-size: 16px;
+    padding: 5px 15px;
+    margin-top: 10px;    
+}
+
+.product-options-open i.icon{
+    float:right;
+}
+.product-actions{
+    text-align: center;
+}
+.product-actions .button{
+    width: 90%;
+    border-radius: 2px;
+    margin: 0px 10px;  
+    margin-top: 10px;
+}
+
+.product-gallery{
+    background-color: white;
+    margin-bottom: 15px;    
+}
+
+.product-gallery img{
+    max-width: 100%;
+    min-width:100%;
+}
+
+
 

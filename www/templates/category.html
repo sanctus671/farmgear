@@ -1,9 +1,70 @@
-<ion-view view-title="Playlists">
-  <ion-content>
-    <ion-list>
-      <ion-item ng-repeat="playlist in playlists" href="#/app/playlists/{{playlist.id}}">
-        {{playlist.title}}
-      </ion-item>
-    </ion-list>
-  </ion-content>
+<ion-view title="Build Order">
+    <ion-content>
+
+        <div class="category-title" style="background-image:linear-gradient(rgba(0, 0, 0, 0.5),rgba(0, 0, 0, 0.5)),url({{category.image}});">
+            <p>{{category.name}}</p>
+        </div>     
+
+        <div ng-show="category.description" class="category-description" ng-bind-html="category.description">
+
+        </div>
+        
+        
+        <div class="category-products" ng-show="products.length > 0">
+            <div class="product-list">
+                <div ng-repeat="product in products" class="product-item">
+                    <img ng-src="{{product.image}}" />
+                   
+                    
+                    <div class="product-title">
+                        <span class="product-name">{{product.name}}</span>
+                        <span class="product-price">${{product.price}}</span>
+                    </div>
+                    
+                    <div class="product-options-open" ng-show="product.product_options.length > 0"  ng-click="showOptions = !showOptions">
+                        This product has {{product.product_options.length}} options
+                        <i class="icon ion-arrow-down-b" ng-class="{'ion-arrow-down-b':!showOptions, 'ion-arrow-up-b':showOptions}"></i>
+                    </div>   
+                    
+                    <div class="product-options" ng-show="showOptions">
+                        {{product.product_options}}
+                    </div>
+                    
+                    <div class="product-short-description" >
+                        {{product.short_description}}
+                    </div>
+                    
+                  
+                    
+                    <div class="product-actions">
+                        
+                        <button class="button button-light" ng-click="openInfoModal(product)">
+                            More Info
+                        </button>  
+
+                        <button class="button button-balanced" ng-click="addToOrder(product)">
+                            Add To Order
+                        </button>                        
+                        
+                    </div>
+                    
+                    
+
+                </div>
+            </div>
+            
+            
+        </div>
+
+        <div class="bar bar-dark" ui-sref="app.category({id:categories[(currentIndex + 1)].id})" ng-if="categories.length > (currentIndex + 1)">
+            <div class="title">Next ({{categories[(currentIndex + 1)].name}}) <i class="icon ion-ios-arrow-forward"></i></div>
+        </div> 
+        
+        <div class="bar bar-dark" ui-sref="app.order" ng-if="categories.length === (currentIndex + 1)">
+            <div class="title">Complete Order <i class="icon ion-ios-arrow-forward"></i></div>
+        </div>        
+
+    </ion-content>
+        
+     
 </ion-view>

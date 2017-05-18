@@ -128,22 +128,42 @@ angular.module('app.services', [])
     this.removeToken = function(){
         window.localStorage.fg_user_token = null;
     }
-    
-    this.setUser = function(user){
-        window.localStorage.fg_user = JSON.stringify(user);
-    }
-    this.getUser = function(){
-        var data = window.localStorage.fg_user ? JSON.parse(window.localStorage.fg_user) : null;
-        return data;
-    }
-    this.removeUser = function(){
-        window.localStorage.fg_user = null;
-    } 
-   
+ 
 })
 
 
-.service('MainService', function ($state, $http, $q, API_URL, $rootScope){
+.service('MainService', function ($state, $http, $q, API_URL, AuthService, $rootScope){
+    var MainService = this;
     
+    this.getCategories = function(){
+        var deferred = $q.defer();
+        var token = AuthService.getToken();
+        if (!token){deferred.reject("No token");} 
+        $http.get(API_URL + '/categories?token=' + token)
+        .success(function(data) {
+            deferred.resolve(data.categories);
+        })
+        .error(function(data) {
+            deferred.reject(data);
+        });
+
+        return deferred.promise;   
+    } 
+    
+    
+    this.getProducts = function(categoryId){
+        var deferred = $q.defer();
+        var token = AuthService.getToken();
+        if (!token){deferred.reject("No token");} 
+        $http.get(API_URL + '/products/' + categoryId + '?token=' + token)
+        .success(function(data) {
+            deferred.resolve(data.products);
+        })
+        .error(function(data) {
+            deferred.reject(data);
+        });
+
+        return deferred.promise;   
+    }    
     
 })

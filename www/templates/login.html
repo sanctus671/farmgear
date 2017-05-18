@@ -1,7 +1,7 @@
 <ion-view>
     <ion-content class="login-screen">
         <div class="login-header">
-            <h1>Farmgear</h1>
+            <img src="img/logo.png" />
         </div>
 
             <form class="login-form" ng-submit="login()">
@@ -18,11 +18,11 @@
                         </button>         
                     </div>
 
-                    <div class="item login-error" ng-if="error[form.currentForm].length > 0">
-                        <p ng-repeat="error in error[form.currentForm]">{{error[0]}}</p>
+                    <div class="item login-error" ng-if="errors.length > 0">
+                        <p ng-repeat="error in errors">{{error[0]}}</p>
                     </div>             
                     <div class="item login-text">
-                        <a ng-click="form.currentForm = 'forgotpassword'">Forgot Password?</a>
+                        <a ui-sref="forgotpassword">Forgot Password?</a>
                     </div>
                 </div>
 
@@ -30,7 +30,7 @@
 
         
             <div class="secondary-action">
-                <button class="button button-block button-balanced" ng-click="form.currentForm = 'register'">
+                <button class="button button-block button-balanced" ui-sref="register">
                   Register
                 </button>              
             </div>
