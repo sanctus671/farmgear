@@ -1,5 +1,42 @@
 <ion-view view-title="Order">
-  <ion-content>
-    {{order}}
-  </ion-content>
+    <ion-content>
+
+        <div class='order-content'>
+        
+            <div class='empty-order' ng-if='localOrder.order_items.length < 1'>
+                <i class='icon' ng-class="{'ion-android-cart' : platform !== 'ios', 'ion-ios-cart' : platform === 'ios'}"></i>
+                No items in your order.
+                <br>Go back and choose something!
+            </div>
+            
+            <div class='order-list' ng-if='localOrder.order_items.length > 0'>
+                <div class='order-item' ng-repeat='item in localOrder.order_items' ng-class="{'order-option':item.product_option_id}">
+                    <span class="order-remove" ng-click="removeItem(item, $index)">Remove</span>
+                    <span class='order-name'>
+                        {{item.name}}
+                        <span class='order-quantity' ng-if="item.name === 'Valves'">(Quantity: {{item.quantity}})</span>
+                    </span>
+                    
+                    <span class='order-price'>${{item.price}}</span>
+                </div>
+                
+                <div class='order-item order-page-total'>
+                    <span class='order-name'>Total</span>
+                    <span class='order-price'>${{getOrderTotal()}}</span>
+                </div>                
+                
+            </div>
+
+            <div class="order-actions" ng-if='localOrder.order_items.length > 0'>
+                <button class="button button-balanced" ng-click="completeOrder()">
+                    Complete Order
+                </button>                 
+            </div>
+            
+            
+            
+        </div>
+        
+      
+    </ion-content>
 </ion-view>

@@ -7,6 +7,8 @@
             <ion-nav-buttons side="left">
                 <button class="button button-icon button-clear" ng-class="{'ion-android-cart' : platform !== 'ios', 'ion-ios-cart' : platform === 'ios'}" ui-sref="app.order">
                 </button>
+                <span class="order-number" ui-sref="app.order">{{order.order_items.length}}</span>
+                <span class="order-total" ui-sref="app.order">${{getOrderPrice()}}</span>
             </ion-nav-buttons>
             <ion-nav-buttons side="right">
                 <button class="button button-icon button-clear" ng-class="{'ion-android-menu' : platform !== 'ios', 'ion-navicon' : platform === 'ios'}" menu-toggle="right">
@@ -22,20 +24,20 @@
         <ion-content>
             <ion-list>
                 
-                <ion-item menu-close ui-sref="app.home">
+                <ion-item class="start-item completed" menu-close ui-sref="app.home">
                   Home
                 </ion-item>  
                 
-                <ion-item ng-repeat="category in categories" ui-sref="app.category({id:category.id})" menu-close>
+                <ion-item class="category-item" ng-repeat="category in categories" ui-sref="app.category({id:category.id})" menu-close ng-class="{'completed':currentState === 'app.order' || (currentState === 'app.category' && category.id <= stateIndex)}">
                   {{category.name}}
                 </ion-item>  
                 
-                <ion-item menu-close ui-sref="app.order">
+                <ion-item class="end-item" menu-close ui-sref="app.order" ng-class="{'completed':currentState === 'app.order'}">
                   My Order
                 </ion-item>          
             </ion-list>
 
-            <img src="img/sidebar.jpg" class="sidebar-logo" />  
+            <img src="img/farmgear.png" class="sidebar-logo" />  
 
 
         </ion-content>

@@ -46,6 +46,15 @@ input[type=range]::-webkit-slider-thumb {
   pointer-events:auto;
 }
 
+.modal-button{
+line-height: 30px;
+    margin-left: 5px;    
+}
+
+.platform-android .modal-button{
+    line-height: 42px;
+}
+
 
 /* Menu
 ==================================*/
@@ -58,35 +67,11 @@ input[type=range]::-webkit-slider-thumb {
 
 .platform-android .bar:not(.bar-footer) .title {
  height:54px !important;
- line-height:48px !important;
+ line-height:50px !important;
 
 }
 
 
-.platform-android .bar:not(.bar-footer) .button{
-        min-height: 54px !important;
-    max-height:54px !important;
-}
-
-.platform-android .modal-button, .platform-android .modal-button2{
-        line-height: 42px;
-}
-
-.main-bar.bar:not(.bar-footer) .buttons-left .button:before{
-   font-size: 28px;
-}
-
-.main-bar.bar:not(.bar-footer) .buttons-left .button:active{
-    opacity:0.3;
-}
-
-.platform-android .main-bar.bar:not(.bar-footer) .buttons-right .button{
-    line-height:40px;
-}
-
-.platform-android .main-bar.bar:not(.bar-footer) .buttons-left .button{
-    line-height:40px;
-}
 
 
 .platform-android .has-header{
@@ -111,6 +96,92 @@ input[type=range]::-webkit-slider-thumb {
     font-size: 20px !important;
     line-height: 40px;
 }
+.bar .title-image{
+    max-width: 100%;
+    max-height: 100%;
+    padding: 2px;
+}
+
+
+.order-total{
+    font-size: 12px;
+    line-height: 32px;
+    margin-left: 0px;    
+}
+
+.platform-android .order-total{
+    line-height:42px;
+}
+
+.order-number{
+    font-size: 8px;
+    background-color: rgb(68, 68, 68);
+    line-height: 8px;
+    padding: 4px 5px;
+    height: 15px;
+    margin: 0px;
+    border-radius: 10px;
+    margin-left: -10px;
+    z-index: 1;    
+}
+
+ion-side-menu ion-content{
+    background-color: #fff
+}
+ion-side-menu .item-complex .item-content{
+    color: rgb(0, 86, 29);
+ 
+}
+
+img.sidebar-logo{
+    max-width: 100%;
+    margin-top: 20px;
+    padding: 20px 15px;    
+}
+
+ion-side-menu .start-item .item-content{
+    padding-left:35px;
+}
+
+ion-side-menu .category-item  .item-content{
+    padding-left:50px;
+    white-space: normal;
+    position:relative;
+
+}
+
+
+ion-side-menu .end-item .item-content{
+    padding-left:35px;
+}
+
+
+ion-side-menu .item-content:before{
+    content: " ";
+    font-family: "Ionicons";
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    border-radius: 7.5px;
+    left: 10px;
+    top: 37%;
+    border: 1px solid #00561d;
+    color: white;
+    font-size: 8px;
+    line-height: 13px;
+    text-align: center;    
+}
+
+ion-side-menu .category-item .item-content:before{
+    left: 25px;
+}
+
+ion-side-menu .completed  .item-content:before{
+    content: "\f122";
+    background-color:  #00561d;
+}
+
+
 
 @media screen and (min-width:768px){
   .menu-content {
@@ -121,9 +192,16 @@ input[type=range]::-webkit-slider-thumb {
   .bar-header button.ion-navicon {
     display: none;
   }
+  
+.menu-right{
+    border-left: 1px solid #bbb;
+        z-index: 1;
+}  
 
   
 }
+
+
   
 
 /* Login
@@ -150,8 +228,8 @@ input[type=range]::-webkit-slider-thumb {
 .login-form{
     width:70%;
     margin:0 auto;
-    min-height: 262.5px;
-    max-height:262.5px;
+    min-height: 260px;
+    max-height:260px;
 }
 
 .login-form.register-form{
@@ -285,6 +363,8 @@ input[type=range]::-webkit-slider-thumb {
 }
 
 
+
+
 /* Category
 ==================================*/
 
@@ -305,13 +385,15 @@ margin: 20px 10px;
 
 .product-item img{
     max-width:100%;
+    margin: auto;
+    display: block;    
     
 }
 
 .product-title{
     height: 20px;
     padding:0px 15px;
-    margin-top:10px;
+    margin-top:15px;
 }
 
 .product-title .product-name{
@@ -364,5 +446,118 @@ float: right;
     min-width:100%;
 }
 
+.product-description{
+        padding: 10px 20px;
+}
+
+.option-cost{
+    float: right;
+    color: #00561d;    
+}
+
+.option-details{
+        font-size: 12px;
+}
+
+.option-name{
+    max-width: 80%;
+    overflow: hidden;
+    display: inline-block;
+    text-overflow: ellipsis;    
+}
+
+.checkbox-balanced input:before, .checkbox-balanced .checkbox-icon:before{
+    border-color: #00561d; 
+}
+
+.checkbox-balanced input:checked:before, .checkbox-balanced input:checked + .checkbox-icon:before{
+    background: #00561d;
+    border-color: #00561d;    
+}
 
 
+/* Order
+==================================*/
+
+.order-content{
+}
+
+.empty-order{
+    font-size: 20px;
+    line-height: 24px;
+    text-align: center;  
+        color: #ccc;
+            margin-top: 40%;
+}
+
+
+.empty-order i{
+    display: block;
+    font-size: 100px;
+    color: #ccc;    
+}
+
+
+.order-item{
+    padding: 20px 20px;
+        padding-bottom: 15px;
+    background-color: white;    
+}
+
+.order-item.order-option{
+    padding-left: 40px;
+}
+
+.order-item{
+    border-bottom:1px solid #ccc;
+}
+
+.order-remove{
+    color: red;
+    font-size: 10px; 
+        vertical-align: top;
+}
+
+.order-name{
+    font-weight: bold;
+    margin-left: 20px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 60%;
+    display: inline-block;   
+}
+
+.order-option .order-name{
+font-weight: normal;    
+}
+
+.order-price{
+ color: #00561d;
+    float: right;   
+}
+
+.order-quantity{
+        font-weight: normal;
+    font-style: italic;
+    margin-left: 10px;
+    font-size: 12px;
+}
+
+.order-page-total .order-name{
+    margin-left:0px;
+}
+
+.order-page-total .order-price{
+    font-weight:bold;
+}
+
+.order-actions{
+    text-align: center;
+}
+.order-actions .button{
+    width: 90%;
+    border-radius: 2px;
+    margin: 0px 10px;  
+    margin-top: 20px;
+}

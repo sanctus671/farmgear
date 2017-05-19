@@ -20,6 +20,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.config']
         var token = AuthService.getToken();
         $rootScope.isLoggedIn = token;
         $rootScope.currentState = toState.name;
+        console.log(toState);
         if (toState.requireAuth && !(token)){
             event.preventDefault();
             $state.go("login");

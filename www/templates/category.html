@@ -27,7 +27,16 @@
                     </div>   
                     
                     <div class="product-options" ng-show="showOptions">
-                        {{product.product_options}}
+                        <ion-list>
+
+                            <ion-checkbox ng-model="selectedOptions[option.name]" ng-repeat="option in product.product_options" ng-change="updateOptions(option, product, selectedOptions[option.name])" class="checkbox-balanced">
+                                <div class="option-title">
+                                    <span class="option-name">{{option.name}}</span>
+                                    <span class="option-cost">${{option.price}}</span>
+                                </div>
+                                <div class="option-details">Part Number: {{option.part_number ? option.part_number : "default"}}, Valves Required: {{option.valves_required}}</div>
+                            </ion-checkbox>
+                        </ion-list>                        
                     </div>
                     
                     <div class="product-short-description" >
@@ -42,9 +51,13 @@
                             More Info
                         </button>  
 
-                        <button class="button button-balanced" ng-click="addToOrder(product)">
+                        <button class="button button-balanced" ng-click="addToOrder(product)" ng-show="!addedToOrder">
                             Add To Order
-                        </button>                        
+                        </button>   
+                        
+                        <button class="button button-assertive" ng-click="removeFromOrder(product)" ng-show="addedToOrder">
+                            Remove From Order
+                        </button>                         
                         
                     </div>
                     
@@ -61,7 +74,7 @@
         </div> 
         
         <div class="bar bar-dark" ui-sref="app.order" ng-if="categories.length === (currentIndex + 1)">
-            <div class="title">Complete Order <i class="icon ion-ios-arrow-forward"></i></div>
+            <div class="title">View Order <i class="icon ion-ios-arrow-forward"></i></div>
         </div>        
 
     </ion-content>

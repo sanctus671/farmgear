@@ -64,7 +64,7 @@ angular.module('app.controllers', [])
 })
 
 
-.controller('AppController', function($scope, $timeout, $ionicModal, $timeout, MainService, $rootScope) {
+.controller('AppController', function($scope, $timeout, $ionicModal, $timeout, MainService, $rootScope, $stateParams) {
     $scope.categories = [];
     
     $rootScope.order = {order_items:[]};
@@ -77,6 +77,15 @@ angular.module('app.controllers', [])
     }
     
     $scope.getCategories();
+    
+    $scope.getOrderPrice = function(){
+        var price = 0;
+        for (var index in $scope.order.order_items){
+            price = price + $scope.order.order_items[index].price;
+        }
+        return price;
+    }
+
 })
 
 .controller('HomeController', function($scope, $timeout) {
@@ -99,9 +108,17 @@ angular.module('app.controllers', [])
     $scope.products = [];
     $scope.categories = [];
     
+    $scope.selectedOptions = {};
+    
     $scope.selectedProduct = {};
     
     $scope.currentIndex = 999;
+    
+    $scope.$on('$ionicView.enter', function() {
+        $rootScope.stateIndex = parseInt($stateParams.id);
+    })
+    
+    $scope.addedToOrder = false;
     
     $scope.getProducts = function(){
         MainService.getProducts($scope.category.id).then(function(data){
@@ -149,7 +166,42 @@ angular.module('app.controllers', [])
     } 
     
     $scope.addToOrder = function(product){
-        $rootScope.order.order_items.push(product);
+        $scope.addedToOrder = true;
+        var item = {product_id:product.id, quantity:1, price: product.price, name:product.name};
+        var exists = false;
+        for (var index in $rootScope.order.order_items){
+            if ($rootScope.order.order_items[index].product_id === product.id && !$rootScope.order.order_items[index].product_option_id){
+                exists = true;
+            }
+        }
+        
+        if (!exists){
+            $rootScope.order.order_items.push(item);
+        }
+    }
+    
+    $scope.removeFromOrder = function(product){
+        $scope.addedToOrder = false;
+        for (var index in $rootScope.order.order_items){
+            if ($rootScope.order.order_items[index].product_id === product.id && !$rootScope.order.order_items[index].product_option_id){
+                $rootScope.order.order_items.splice(index,1);
+            }
+        }
+    }    
+    
+    
+    $scope.updateOptions = function(option, product, selected){
+        if (selected){
+            var item = {product_option_id:option.id, product_id: product.id,  quantity:1, price: option.price, name:option.name, product_name:product.name};
+            $rootScope.order.order_items.push(item);
+        }
+        else{
+            for (var index in $rootScope.order.order_items){
+                if ($rootScope.order.order_items[index].product_option_id === option.id){
+                    $rootScope.order.order_items.splice(index, 1);
+                }
+            }
+        }
     }
 
     
@@ -157,6 +209,76 @@ angular.module('app.controllers', [])
     
 })
 
-.controller('OrderController', function($scope, $rootScope) {
-
+.controller('OrderController', function($scope, $rootScope, $ionicPopup, $state, $ionicHistory, MainService) {
+    
+    $scope.localOrder = {order_items:[]}
+    
+    $scope.$on('$ionicView.enter', function() {
+        //order the order
+        $scope.localOrder = angular.copy($rootScope.order);
+                
+        $scope.localOrder.order_items.sort(function(a,b){
+            a = parseFloat(a.product_id + "." + a.product_option_id);
+            b = parseFloat(b.product_id + "." + b.product_option_id);
+            return a - b;
+        })
+        //calculate and add valves
+        var valves = 0;
+        for (var index in $scope.localOrder.order_items){
+            if ($scope.localOrder.order_items[index].valves_required){
+                valves = valves + $scope.localOrder.order_items[index].valves_required;
+            }
+        }
+        
+        if (valves > 0){
+            $scope.localOrder.order_items.push({product_id:2, quantity:valves, price:valves*425, name:"Valves"});
+        }
+        
+    })    
+    
+    
+    $scope.getOrderTotal = function(){
+        var price = 0;
+        for (var index in $scope.localOrder.order_items){
+            price = price + $scope.localOrder.order_items[index].price;
+        }
+        return price;        
+    }
+    
+    $scope.removeItem = function(item, index){
+        $scope.localOrder.order_items.splice(index,1);
+        for (var index in $rootScope.order.order_items){
+            if ($rootScope.order.order_items[index].product_id === item.product_id && 
+                    $rootScope.order.order_items[index].product_option_id === item.product_option_id){
+                $rootScope.order.order_items.splice(index,1);
+                //$ionicHistory.clearCache();
+            }
+        }
+        
+    }
+    
+    $scope.completeOrder = function(){
+        MainService.createOrder($scope.localOrder);
+        $ionicPopup.alert({
+            title: 'Order Completed',
+            template: 'Your order has been received and is now being processed. We will be in touch as your order progresses.',
+            buttons:[{
+                text: 'OK',
+                type: 'button-balanced',
+                onTap: function(e) {
+                  return true;
+                }
+                }]
+       }).then(function(res) {
+            $scope.localOrder = {order_items:[]};
+            $rootScope.order.order_items = [];
+            $ionicHistory.clearCache();
+            $ionicHistory.clearHistory();            
+            $state.go('app.home');
+        });       
+    }
+    
+    
+    
+    
 })

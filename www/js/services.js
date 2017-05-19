@@ -164,6 +164,22 @@ angular.module('app.services', [])
         });
 
         return deferred.promise;   
+    }  
+    
+    this.createOrder = function(order){
+        var deferred = $q.defer();
+        var token = AuthService.getToken();
+        if (!token){deferred.reject("No token");} 
+        $http.post(API_URL + '/orders?token=' + token, order)
+        .success(function(data) {
+            deferred.resolve(data);
+        })
+        .error(function(data) {
+            deferred.reject(data);
+        });
+
+        return deferred.promise;   
     }    
+    
     
 })
