@@ -118,6 +118,7 @@ angular.module('app.controllers', [])
     $scope.getCategories = function(){
         MainService.getCategories().then(function(data){
             $scope.categories = data;
+            console.log(data);
             $scope.$broadcast('scroll.refreshComplete');
         })        
     }
