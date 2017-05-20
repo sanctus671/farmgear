@@ -1,7 +1,7 @@
 angular.module('app.controllers', [])
 
 
-.controller('LoginController', function($scope, AuthService, $state) {
+.controller('LoginController', function($scope, AuthService, $state, $timeout) {
     $scope.user = {email:"", password:""};
     $scope.errors = [];
     
