@@ -113,10 +113,13 @@ angular.module('app.controllers', [])
     
     $rootScope.$on("dbLoaded", function(){
         console.log(OfflineService.isOffline());
-        if (OfflineService.isOffline()){   
-            $scope.$parent.getCategories();
-            console.log($scope.categories);
-        }        
+        $timeout(function(){
+            console.log(OfflineService.isOffline());
+            if (OfflineService.isOffline()){   
+                $scope.$parent.getCategories();
+                console.log($scope.categories);
+            }        
+        },1000);
     })
 
     
