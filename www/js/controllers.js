@@ -100,7 +100,7 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('HomeController', function($scope, $timeout, MainService) {
+.controller('HomeController', function($scope, $timeout, MainService, OfflineService) {
     $timeout(function(){
         $scope.categories = $scope.$parent.categories;        
     })
@@ -109,9 +109,16 @@ angular.module('app.controllers', [])
         $scope.categories = $scope.$parent.categories;      
     })  
     
+    if (OfflineService.isOffline()){ //have to do this because local db takes a while to load
+        $timeout(function(){          
+            $scope.getCategories();
+        },1000);
+    }
+    
     $scope.getCategories = function(){
         MainService.getCategories().then(function(data){
             $scope.categories = data;
+            $scope.$broadcast('scroll.refreshComplete');
         })        
     }
     
