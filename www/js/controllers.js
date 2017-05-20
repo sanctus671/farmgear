@@ -9,7 +9,7 @@ angular.module('app.controllers', [])
         AuthService.login($scope.user).then(function(){
             $scope.user = {email:"", password:"", confirm_password:""};
             $scope.errors = [];
-            $state.go("app.about");
+            $state.go("app.home");
         },function(data){
             console.log(data);
             if (data.error && data.error.errors){
@@ -87,7 +87,7 @@ angular.module('app.controllers', [])
     $scope.getOrderPrice = function(){
         var price = 0;
         for (var index in $scope.order.order_items){
-            price = price + $scope.order.order_items[index].price;
+            price = price + parseFloat($scope.order.order_items[index].price);
         }
         return price;
     }
@@ -235,7 +235,7 @@ angular.module('app.controllers', [])
         var valves = 0;
         for (var index in $scope.localOrder.order_items){
             if ($scope.localOrder.order_items[index].valves_required){
-                valves = valves + $scope.localOrder.order_items[index].valves_required;
+                valves = valves + parseFloat($scope.localOrder.order_items[index].valves_required);
             }
         }
         
@@ -249,7 +249,7 @@ angular.module('app.controllers', [])
     $scope.getOrderTotal = function(){
         var price = 0;
         for (var index in $scope.localOrder.order_items){
-            price = price + $scope.localOrder.order_items[index].price;
+            price = price + parseFloat($scope.localOrder.order_items[index].price);
         }
         return price;        
     }

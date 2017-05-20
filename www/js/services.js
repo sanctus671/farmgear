@@ -145,6 +145,7 @@ angular.module('app.services', [])
             deferred.resolve(data.categories);
         })
         .error(function(data) {
+            if (data && data.error && data.error.status_code === 401){AuthService.logout();$state.go("login")}
             var data = OfflineService.getCategories();
             deferred.resolve(data);
         });
@@ -161,6 +162,7 @@ angular.module('app.services', [])
             deferred.resolve(data);
         })
         .error(function(data) {
+            if (data && data.error && data.error.status_code === 401){AuthService.logout();$state.go("login")}
             if (OfflineService.isOffline()){
                 OfflineService.storeOrder(order);
             }

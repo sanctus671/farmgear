@@ -1,2 +1,2 @@
 angular.module('app.config', [])
-.constant('API_URL', 'http://websites.localhost/farmgear/api/public/api')
+.constant('API_URL', 'http://api.farmgear.co.nz/public/api')
