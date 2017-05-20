@@ -6,7 +6,6 @@ angular.module('app.services', [])
         var deferred = $q.defer();
         $http.post(API_URL + "/auth/login", data)
         .success(function(data) {
-            console.log(data);
             AuthService.setToken(data.token);
             deferred.resolve(data.token);
             
@@ -95,8 +94,7 @@ angular.module('app.services', [])
     this.logout = function(){
         var deferred = $q.defer();
         var token = AuthService.getToken();
-        if (!token){deferred.reject("No token");}   
-        console.log(token);
+        if (!token){deferred.reject("No token");} 
         $http.post(API_URL + "/auth/logout?token=" + token)
         .success(function(data) {
             AuthService.removeToken();
@@ -246,7 +244,6 @@ angular.module('app.services', [])
                     deferred.reject();
                 }
             }, function (err) {
-                console.error(err);
                 deferred.reject();
             });  
         }
@@ -261,7 +258,6 @@ angular.module('app.services', [])
         $cordovaSQLite.execute($rootScope.db, query, [1, data]).then(function(res) {
 
         }, function (err) {
-            console.error(err);
         });        
     }
 

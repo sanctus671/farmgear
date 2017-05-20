@@ -18,7 +18,7 @@ h1{
 }
 
 ion-content{
-        background-color: #ECECEC;
+            background-color: #e6e7e9;
 }
 
 
@@ -372,6 +372,12 @@ ion-side-menu .completed  .item-content:before{
         padding: 20px;
 }
 
+.category-description img{
+    max-width: 100%;
+    margin: 0 auto;
+    display: block;
+}
+
 .product-list{
     
 }
@@ -385,6 +391,7 @@ margin: 20px 10px;
 
 .product-item img{
     max-width:100%;
+    min-width: 100%;
     margin: auto;
     display: block;    
     

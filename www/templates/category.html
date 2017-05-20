@@ -22,7 +22,7 @@
                     </div>
                     
                     <div class="product-options-open" ng-show="product.product_options.length > 0"  ng-click="showOptions = !showOptions">
-                        This product has {{product.product_options.length}} options
+                        This product has {{product.product_options.length}} option<span ng-if="product.product_options.length > 1">s</span>
                         <i class="icon ion-arrow-down-b" ng-class="{'ion-arrow-down-b':!showOptions, 'ion-arrow-up-b':showOptions}"></i>
                     </div>   
                     
@@ -51,11 +51,11 @@
                             More Info
                         </button>  
 
-                        <button class="button button-balanced" ng-click="addToOrder(product)" ng-show="!addedToOrder">
+                        <button class="button button-balanced" ng-click="addToOrder(product)" ng-show="!addedToOrder[product.name]">
                             Add To Order
                         </button>   
                         
-                        <button class="button button-assertive" ng-click="removeFromOrder(product)" ng-show="addedToOrder">
+                        <button class="button button-assertive" ng-click="removeFromOrder(product)" ng-show="addedToOrder[product.name]">
                             Remove From Order
                         </button>                         
                         

@@ -11,7 +11,6 @@ angular.module('app.controllers', [])
             $scope.errors = [];
             $state.go("app.home");
         },function(data){
-            console.log(data);
             if (data.error && data.error.errors){
                 $scope.errors = data.error.errors;
             }
@@ -39,13 +38,11 @@ angular.module('app.controllers', [])
             return;
         }
         AuthService.register($scope.user).then(function(data){
-            console.log(data);
             $scope.user = {email:"", name:"", phone:"", password:"", repeat_password:""};
             $scope.errors = [];
             $scope.registered = true;
             
         },function(data){
-            console.log(data);
             if (data.error && data.error.errors){
                 $scope.errors = data.error.errors;
             }
@@ -102,22 +99,17 @@ angular.module('app.controllers', [])
 
 .controller('HomeController', function($scope, $timeout, MainService, OfflineService, $rootScope) {
     $timeout(function(){
-        console.log("here");
         $scope.categories = $scope.$parent.categories;        
     })
     
     $scope.$parent.$on("categoriesLoaded",function(){
-        $scope.categories = $scope.$parent.categories;   
-        console.log($scope.categories);
+        $scope.categories = $scope.$parent.categories; 
     })  
     
     $rootScope.$on("dbLoaded", function(){
-        console.log(OfflineService.isOffline());
         $timeout(function(){
-            console.log(OfflineService.isOffline());
             if (OfflineService.isOffline()){   
                 $scope.$parent.getCategories();
-                console.log($scope.categories);
             }        
         },1000);
     })
@@ -125,7 +117,6 @@ angular.module('app.controllers', [])
     
     $scope.getCategories = function(){
         $scope.$parent.getCategories();
-        console.log("here");
         $scope.$broadcast('scroll.refreshComplete');       
     }
     
@@ -150,7 +141,7 @@ angular.module('app.controllers', [])
         $rootScope.stateIndex = parseInt($stateParams.id);
     })
     
-    $scope.addedToOrder = false;
+    $scope.addedToOrder = {};
     
     $scope.getProducts = function(){
         $scope.products = $scope.category.products; 
@@ -162,7 +153,6 @@ angular.module('app.controllers', [])
     }
     
     $scope.getCategory = function(){
-        console.log($scope.$parent.categories);
         for (var index in $scope.$parent.categories){
             if (parseInt($scope.$parent.categories[index].id) === parseInt($stateParams.id)){
                 $scope.category = $scope.$parent.categories[index];
@@ -195,7 +185,7 @@ angular.module('app.controllers', [])
     } 
     
     $scope.addToOrder = function(product){
-        $scope.addedToOrder = true;
+        $scope.addedToOrder[product.name] = true;
         var item = {product_id:product.id, quantity:1, price: product.price, name:product.name};
         var exists = false;
         for (var index in $rootScope.order.order_items){
@@ -210,7 +200,7 @@ angular.module('app.controllers', [])
     }
     
     $scope.removeFromOrder = function(product){
-        $scope.addedToOrder = false;
+        $scope.addedToOrder[product.name] = false;
         for (var index in $rootScope.order.order_items){
             if ($rootScope.order.order_items[index].product_id === product.id && !$rootScope.order.order_items[index].product_option_id){
                 $rootScope.order.order_items.splice(index,1);
@@ -221,7 +211,8 @@ angular.module('app.controllers', [])
     
     $scope.updateOptions = function(option, product, selected){
         if (selected){
-            var item = {product_option_id:option.id, product_id: product.id,  quantity:1, price: option.price, name:option.name, product_name:product.name};
+            if (!$scope.addToOrder[product.name]){$scope.addToOrder(product);}
+            var item = {product_option_id:option.id, product_id: product.id,  quantity:1, price: option.price, name:option.name, valves_required:option.valves_required, product_name:product.name};
             $rootScope.order.order_items.push(item);
         }
         else{
@@ -258,7 +249,6 @@ angular.module('app.controllers', [])
                 valves = valves + parseFloat($scope.localOrder.order_items[index].valves_required);
             }
         }
-        
         if (valves > 0){
             $scope.localOrder.order_items.push({product_id:2, quantity:valves, price:valves*425, name:"Valves"});
         }
