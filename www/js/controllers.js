@@ -102,6 +102,7 @@ angular.module('app.controllers', [])
 
 .controller('HomeController', function($scope, $timeout, MainService, OfflineService, $rootScope) {
     $timeout(function(){
+        console.log("here");
         $scope.categories = $scope.$parent.categories;        
     })
     
@@ -111,18 +112,18 @@ angular.module('app.controllers', [])
     })  
     
     $rootScope.$on("dbLoaded", function(){
+        console.log(OfflineService.isOffline());
         if (OfflineService.isOffline()){   
             $scope.$parent.getCategories();
+            console.log($scope.categories);
         }        
     })
 
     
     $scope.getCategories = function(){
-        MainService.getCategories().then(function(data){
-            $scope.categories = data;
-            console.log(data);
-            $scope.$broadcast('scroll.refreshComplete');
-        })        
+        $scope.$parent.getCategories();
+        console.log("here");
+        $scope.$broadcast('scroll.refreshComplete');       
     }
     
     
