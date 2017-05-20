@@ -274,7 +274,7 @@ angular.module('app.services', [])
     }, false);
     document.addEventListener("online", function(){
         online = true;
-        this.checkOrders();
+        OfflineService.checkOrders();
     }, false); 
     
     
@@ -284,7 +284,7 @@ angular.module('app.services', [])
             this.submitOrders();
         }
     } 
-    this.checkOrders();
+    OfflineService.checkOrders();
     
     
 })

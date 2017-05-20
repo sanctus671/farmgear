@@ -100,14 +100,20 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('HomeController', function($scope, $timeout) {
+.controller('HomeController', function($scope, $timeout, MainService) {
     $timeout(function(){
         $scope.categories = $scope.$parent.categories;        
     })
     
     $scope.$parent.$on("categoriesLoaded",function(){
         $scope.categories = $scope.$parent.categories;      
-    })    
+    })  
+    
+    $scope.getCategories = function(){
+        MainService.getCategories().then(function(data){
+            $scope.categories = data;
+        })        
+    }
     
     
 })
