@@ -1,26 +1,31 @@
-angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.config'])
+angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.config', 'ngCordova'])
 
-.run(function($ionicPlatform, $rootScope, AuthService, $state) {
-  $ionicPlatform.ready(function() {
-      
-    if (window.cordova && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-      cordova.plugins.Keyboard.disableScroll(true);
+.run(function($ionicPlatform, $rootScope, AuthService, $state, $cordovaSQLite) {
+    $ionicPlatform.ready(function() {
 
-    }
-    if (window.StatusBar) {
-      StatusBar.styleDefault();
-    }
-    
-    $rootScope.platform = ionic.Platform.platform(); 
-  });
+        if (window.cordova && window.cordova.plugins.Keyboard) {
+            cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+            cordova.plugins.Keyboard.disableScroll(true);
+
+        }
+        if (window.StatusBar) {
+            StatusBar.styleDefault();
+        }
+
+        if (window.cordova){
+            //$cordovaSQLite.deleteDB("offline.db");
+            $rootScope.db = $cordovaSQLite.openDB({name: 'offline.db', location: 'default'});
+            $cordovaSQLite.execute($rootScope.db, "CREATE TABLE IF NOT EXISTS categories (id int unique, data text)");     
+        }    
+
+        $rootScope.platform = ionic.Platform.platform(); 
+    });
   
   
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams){ 
         var token = AuthService.getToken();
         $rootScope.isLoggedIn = token;
         $rootScope.currentState = toState.name;
-        console.log(toState);
         if (toState.requireAuth && !(token)){
             event.preventDefault();
             $state.go("login");

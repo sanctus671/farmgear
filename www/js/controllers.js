@@ -20,6 +20,12 @@ angular.module('app.controllers', [])
             }
         });
     }
+    
+    $scope.$on('$ionicView.loaded', function() {
+      ionic.Platform.ready( function() {         
+            if(navigator && navigator.splashscreen) {$timeout(function(){navigator.splashscreen.hide();},1000);}         
+      });
+    }); 
 })
 
 .controller('RegisterController', function($scope, AuthService) {
@@ -85,6 +91,12 @@ angular.module('app.controllers', [])
         }
         return price;
     }
+    
+    $scope.$on('$ionicView.loaded', function() {
+      ionic.Platform.ready( function() {         
+            if(navigator && navigator.splashscreen) {$timeout(function(){navigator.splashscreen.hide();},1000);}         
+      });
+    });     
 
 })
 
@@ -121,15 +133,12 @@ angular.module('app.controllers', [])
     $scope.addedToOrder = false;
     
     $scope.getProducts = function(){
-        MainService.getProducts($scope.category.id).then(function(data){
-          $scope.products = data; 
-          for (var index in $scope.products){
-              if ($scope.products[index].gallery){
-                  $scope.products[index].gallery = JSON.parse($scope.products[index].gallery);
-              }
-          }
-          console.log(data);
-        })
+        $scope.products = $scope.category.products; 
+        for (var index in $scope.products){
+            if ($scope.products[index].gallery){
+                $scope.products[index].gallery = JSON.parse($scope.products[index].gallery);
+            }
+        }
     }
     
     $scope.getCategory = function(){
