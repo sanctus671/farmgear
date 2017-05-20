@@ -14,7 +14,10 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.config',
 
         if (window.cordova){
             //$cordovaSQLite.deleteDB("offline.db");
-            $rootScope.db = $cordovaSQLite.openDB({name: 'offline.db', location: 'default'});
+            $rootScope.db = $cordovaSQLite.openDB({name: 'offline.db', location: 'default'}).then(function(){
+                $rootScope.$broadcast("dbLoaded");
+                console.log("broadcasting db load");
+            });
             $cordovaSQLite.execute($rootScope.db, "CREATE TABLE IF NOT EXISTS categories (id int unique, data text)");     
         }    
 
