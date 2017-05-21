@@ -1,4 +1,4 @@
-angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.config', 'ngCordova', 'ionicImgCache'])
+angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.config', 'ngCordova'])
 
 .run(function($ionicPlatform, $rootScope, AuthService, $state, $cordovaSQLite) {
     $ionicPlatform.ready(function() {

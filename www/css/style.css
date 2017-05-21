@@ -35,8 +35,34 @@ p {
 
 img {
     -webkit-user-drag: none;
+    position: relative;
 }
 
+
+/* style this to fit your needs */
+/* and remove [alt] to apply to all images*/
+img[alt]:after {  
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #e6e7e9;
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+line-height: 18px;
+    text-align: center;
+    content: attr(alt);
+}
+.product-item img[alt]:after{
+        background-color: #f2f2f2;
+}
+
+.product-gallery img[alt]:after{
+    background-color: #fff;
+        padding-top: 5px;
+}
 
 input[type=range] {
   pointer-events: none;
@@ -53,6 +79,10 @@ line-height: 30px;
 
 .platform-android .modal-button{
     line-height: 42px;
+}
+
+.slider-slides{
+        min-height: 60px;
 }
 
 
