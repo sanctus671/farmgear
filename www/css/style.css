@@ -400,12 +400,17 @@ ion-side-menu .completed  .item-content:before{
 
 .category-description{
         padding: 20px;
+        padding-bottom:0px;
 }
 
 .category-description img{
     max-width: 100%;
     margin: 0 auto;
     display: block;
+}
+
+.category-bar{
+    margin-top:10px;
 }
 
 .product-list{
@@ -419,9 +424,6 @@ margin: 20px 10px;
     padding-bottom: 30px;
 }
 
-.product-item:first-child{
-        margin-top: 0px;
-}
 
 .product-item img{
     max-width:100%;

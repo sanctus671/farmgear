@@ -69,11 +69,11 @@
             
         </div>
 
-        <div class="bar bar-dark" ui-sref="app.category({id:categories[(currentIndex + 1)].id})" ng-if="categories.length > (currentIndex + 1)">
+        <div class="category-bar bar bar-dark" ui-sref="app.category({id:categories[(currentIndex + 1)].id})" ng-if="categories.length > (currentIndex + 1)">
             <div class="title">Next ({{categories[(currentIndex + 1)].name}}) <i class="icon ion-ios-arrow-forward"></i></div>
         </div> 
         
-        <div class="bar bar-dark" ui-sref="app.order" ng-if="categories.length === (currentIndex + 1)">
+        <div class="category-bar bar bar-dark" ui-sref="app.order" ng-if="categories.length === (currentIndex + 1)">
             <div class="title">View Order <i class="icon ion-ios-arrow-forward"></i></div>
         </div>        
 
