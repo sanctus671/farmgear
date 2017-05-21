@@ -52,6 +52,7 @@
     <gap:plugin spec="https://github.com/litehelpers/Cordova-sqlite-legacy-build-support.git#master"/>
     <gap:plugin name="cordova-plugin-statusbar" source="npm"/>
     <gap:plugin name="ionic-plugin-keyboard" source="npm"/>
+    <gap:plugin name="cordova-plugin-whitelist" source="npm"/>
     <gap:plugin name="cordova-plugin-device" source="npm"/>
     <gap:plugin name="cordova-plugin-file" source="npm"/>
     <gap:plugin name="cordova-plugin-file-transfer" source="npm"/>	
