@@ -6,7 +6,7 @@
         </ion-refresher>
         <div class="category-list">
             
-            <div ion-img-cache-bg ui-sref="app.category({id:category.id})" class="category-item" ng-repeat="category in categories" ng-style="{'background-image':'linear-gradient(rgba(0, 0, 0, 0.5),rgba(0, 0, 0, 0.5)),url({{category.image}})'}">
+            <div ui-sref="app.category({id:category.id})" class="category-item" ng-repeat="category in categories" ng-style="{'background-image':'linear-gradient(rgba(0, 0, 0, 0.5),rgba(0, 0, 0, 0.5)),url({{category.image}})'}">
                 <p>{{category.name}}</p>
             </div>
 
