@@ -54,7 +54,7 @@
     <gap:plugin name="ionic-plugin-keyboard" source="npm"/>
     <gap:plugin name="cordova-plugin-device" source="npm"/>
     <gap:plugin name="cordova-plugin-file" source="npm"/>
-    <gap:plugin name="cordova-plugin-file-transfer" source="npm"  version="1.5.1"/>	
+    <gap:plugin name="cordova-plugin-file-transfer" source="npm"/>	
 	
 	
     <icon gap:platform="android" gap:qualifier="ldpi" src="resources/icons/android/icon-36-ldpi.png" />
