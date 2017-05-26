@@ -75,7 +75,6 @@ angular.module('app.controllers', [])
     $scope.getCategories = function(){
         MainService.getCategories().then(function(data){
             $scope.categories = data;
-            console.log(data);
             $scope.$broadcast("categoriesLoaded");
         })
     }
@@ -97,17 +96,14 @@ angular.module('app.controllers', [])
     }
     
     $scope.calculateValves = function(){
-        console.log("here");
         var valves = 0;
         for (var index in $rootScope.order.order_items){
-            console.log($rootScope.order.order_items[index]);
             if ($rootScope.order.order_items[index] && $rootScope.order.order_items[index].product_id === 2){
                 //remove existing valves product
                 $rootScope.order.order_items.splice(index,1);
             }
             if ($rootScope.order.order_items[index] && $rootScope.order.order_items[index].valves_required){
                 valves = valves + parseFloat($rootScope.order.order_items[index].valves_required);
-                console.log($rootScope.order.order_items[index]);
             }
             else if ($rootScope.order.order_items[index] && $rootScope.order.order_items[index].spare_valves){
                 valves = valves - parseFloat($rootScope.order.order_items[index].spare_valves);
@@ -269,7 +265,6 @@ angular.module('app.controllers', [])
 
     
     $scope.openViewFullOption = function(ev, option, product){
-        console.log("here");
         ev.stopPropagation();
         $ionicPopup.show('show',{
             templateUrl: 'templates/popups/view-option.html',
@@ -369,7 +364,15 @@ angular.module('app.controllers', [])
     }
     
     $scope.completeOrder = function(){
-        MainService.createOrder($rootScope.order);
+        
+        if ($rootScope.user && $rootScope.user.discount > 0){
+            var order = angular.copy($rootScope.order);
+            order.order_items.push({product_id:19, quantity:1, price:-($scope.discount), name:"Discount"});
+            MainService.createOrder(order);
+        }
+        else{
+            MainService.createOrder($rootScope.order);
+        }
         $ionicPopup.alert({
             title: 'Order Completed',
             template: 'Your order has been received and is now being processed. We will be in touch as your order progresses.',
