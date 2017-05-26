@@ -7,6 +7,7 @@ angular.module('app.services', [])
         $http.post(API_URL + "/auth/login", data)
         .success(function(data) {
             AuthService.setToken(data.token);
+            AuthService.updateUserData();
             deferred.resolve(data.token);
             
         })
@@ -22,7 +23,7 @@ angular.module('app.services', [])
         var deferred = $q.defer();
         $http.post(API_URL + "/auth/signup", data)
         .success(function(data) {
-            AuthService.setToken(data.token);     
+            //AuthService.setToken(data.token);     
             deferred.resolve(data);
         })
         .error(function(data) {
@@ -44,6 +45,25 @@ angular.module('app.services', [])
         }
         return deferred.promise;
     }    
+    
+    this.updateUserData = function(){
+        var deferred = $q.defer();
+        var token = AuthService.getToken();
+        if (!token){deferred.reject("No token");} 
+        $http.get(API_URL + '/user?token=' + token)
+        .success(function(data) {
+            if (!data.user.approved){
+                AuthService.logout();
+            }
+            AuthService.setData(data.user);
+            deferred.resolve(data.user);
+        })
+        .error(function(data) {
+            AuthService.getData();
+            deferred.resolve(data);
+        });            
+        return deferred.promise;
+    }
      
     this.recoverPassword = function(email){
         var deferred = $q.defer();
@@ -98,15 +118,17 @@ angular.module('app.services', [])
         $http.post(API_URL + "/auth/logout?token=" + token)
         .success(function(data) {
             AuthService.removeToken();
-            AuthService.removeUser();
-            $rootScope.user = null;            
+            AuthService.removeData();
+            $rootScope.user = null; 
+            $rootScope.isLoggedIn = false;
             deferred.resolve(data);
         })
         .error(function(data) {
             AuthService.removeToken();
-            AuthService.removeUser();
-            $rootScope.user = null;            
-            deferred.reject(data);
+            AuthService.removeData();
+            $rootScope.user = null;   
+            $rootScope.isLoggedIn = false;
+            deferred.resolve(data);
         });
           
 
@@ -126,6 +148,18 @@ angular.module('app.services', [])
     this.removeToken = function(){
         window.localStorage.fg_user_token = null;
     }
+    
+    this.setData = function(data){
+        window.localStorage.fg_data_token = JSON.stringify(data);
+        
+    }
+    this.getData = function(){
+        var data = window.localStorage.fg_data_token ? JSON.parse(window.localStorage.fg_data_token) : null;
+        return data;        
+    }
+    this.removeData = function(){
+        window.localStorage.fg_data_token = null;
+    }    
  
 })
 

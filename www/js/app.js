@@ -19,6 +19,10 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.config',
                 $rootScope.$broadcast("dbLoaded");               
             });     
         }    
+        
+        AuthService.updateUserData().then(function(data){
+            $rootScope.user = data;
+        });
 
         $rootScope.platform = ionic.Platform.platform(); 
     });

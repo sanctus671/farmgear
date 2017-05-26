@@ -75,6 +75,7 @@ angular.module('app.controllers', [])
     $scope.getCategories = function(){
         MainService.getCategories().then(function(data){
             $scope.categories = data;
+            console.log(data);
             $scope.$broadcast("categoriesLoaded");
         })
     }
@@ -83,10 +84,39 @@ angular.module('app.controllers', [])
     
     $scope.getOrderPrice = function(){
         var price = 0;
-        for (var index in $scope.order.order_items){
-            price = price + parseFloat($scope.order.order_items[index].price);
+        for (var index in $rootScope.order.order_items){
+            if ($rootScope.user && $rootScope.user.discount > 0){
+                price = price + (parseFloat($rootScope.order.order_items[index].price) * (1 - (parseFloat($rootScope.user.discount)/100)));
+            }
+            else{
+                price = price + parseFloat($rootScope.order.order_items[index].price);
+            }
+            
         }
         return price;
+    }
+    
+    $scope.calculateValves = function(){
+        console.log("here");
+        var valves = 0;
+        for (var index in $rootScope.order.order_items){
+            console.log($rootScope.order.order_items[index]);
+            if ($rootScope.order.order_items[index] && $rootScope.order.order_items[index].product_id === 2){
+                //remove existing valves product
+                $rootScope.order.order_items.splice(index,1);
+            }
+            if ($rootScope.order.order_items[index] && $rootScope.order.order_items[index].valves_required){
+                valves = valves + parseFloat($rootScope.order.order_items[index].valves_required);
+                console.log($rootScope.order.order_items[index]);
+            }
+            else if ($rootScope.order.order_items[index] && $rootScope.order.order_items[index].spare_valves){
+                valves = valves - parseFloat($rootScope.order.order_items[index].spare_valves);
+                $rootScope.order.order_items[index]
+            }
+        }
+        if (valves > 0){
+            $rootScope.order.order_items.push({product_id:2, quantity:valves, price:valves*425, name:"Valves"});
+        } 
     }
     
     $scope.$on('$ionicView.loaded', function() {
@@ -126,12 +156,13 @@ angular.module('app.controllers', [])
 .controller('AboutController', function($scope) {
 })
 
-.controller('CategoryController', function($scope, $stateParams, MainService, $timeout, $ionicModal, $rootScope) {
+.controller('CategoryController', function($scope, $stateParams, MainService, $timeout, $ionicModal, $rootScope, $ionicPopup) {
     $scope.category = {};
     $scope.products = [];
     $scope.categories = [];
     
     $scope.selectedOptions = {};
+    $scope.selectedOption = {}; //for popup
     
     $scope.selectedProduct = {};
     
@@ -186,7 +217,7 @@ angular.module('app.controllers', [])
     
     $scope.addToOrder = function(product){
         $scope.addedToOrder[product.name] = true;
-        var item = {product_id:product.id, quantity:1, price: product.price, name:product.name};
+        var item = {product_id:product.id, quantity:1, price: product.price, name:product.name, spare_valves:product.spare_valves};
         var exists = false;
         for (var index in $rootScope.order.order_items){
             if ($rootScope.order.order_items[index].product_id === product.id && !$rootScope.order.order_items[index].product_option_id){
@@ -196,6 +227,7 @@ angular.module('app.controllers', [])
         
         if (!exists){
             $rootScope.order.order_items.push(item);
+            $scope.$parent.calculateValves();
         }
     }
     
@@ -204,80 +236,140 @@ angular.module('app.controllers', [])
         for (var index in $rootScope.order.order_items){
             if ($rootScope.order.order_items[index].product_id === product.id && !$rootScope.order.order_items[index].product_option_id){
                 $rootScope.order.order_items.splice(index,1);
+                $scope.$parent.calculateValves();
             }
-        }
+        }   
     }    
     
     
     $scope.updateOptions = function(option, product, selected){
+        if ($rootScope.user && $rootScope.user.permission === "public"){
+            return;
+        }
         if (selected){
             if (!$scope.addToOrder[product.name]){$scope.addToOrder(product);}
             var item = {product_option_id:option.id, product_id: product.id,  quantity:1, price: option.price, name:option.name, valves_required:option.valves_required, product_name:product.name};
-            $rootScope.order.order_items.push(item);
+            if (option.allow_multiple){
+                $scope.addQuantity(item);
+            }
+            else{
+                $rootScope.order.order_items.push(item);
+                $scope.$parent.calculateValves();
+            }
         }
         else{
             for (var index in $rootScope.order.order_items){
                 if ($rootScope.order.order_items[index].product_option_id === option.id){
                     $rootScope.order.order_items.splice(index, 1);
+                    $scope.$parent.calculateValves();
                 }
             }
         }
     }
 
     
+    $scope.openViewFullOption = function(ev, option, product){
+        console.log("here");
+        ev.stopPropagation();
+        $ionicPopup.show('show',{
+            templateUrl: 'templates/popups/view-option.html',
+            title: 'Option Details',
+            scope: $scope,
+            buttons: [
+              { text: 'Cancel' },
+              {
+                text: '<b>Add Option</b>',
+                type: 'button-balanced',
+                onTap: function(e) {
+                    return true;
+                }
+              }
+            ]
+          }).then(function(res) {
+                if (res){
+                    $scope.selectedOptions[option.name];
+                    $scope.updateOptions(option, product, selectedOptions[option.name])
+                }
+            });        
+    }  
+    
+    
+    $scope.addQuantity = function(item){
+        $scope.selectedOption = item;
+        $ionicPopup.show({
+          template: '<input type="number" ng-model="selectedOption.quantity" class="quantity-input">',
+          title: 'Select Quantity',
+          subTitle: 'Choose how many of this option you want to add',
+          scope: $scope,
+          buttons: [
+            { text: 'Cancel' },
+            {
+              text: '<b>Add</b>',
+              type: 'button-balanced',
+              onTap: function(e) {
+                return true;
+                }
+              
+            }
+          ]
+        }).then(function(res) {
+            if (res){
+                item.price = item.price * item.quantity;
+                $rootScope.order.order_items.push(item);
+                $scope.$parent.calculateValves();
+            }
+            else{
+                $scope.selectedOptions[item.name] = false;
+            }
+        });        
+    }
+    
     
     
 })
 
 .controller('OrderController', function($scope, $rootScope, $ionicPopup, $state, $ionicHistory, MainService) {
-    
-    $scope.localOrder = {order_items:[]}
-    
+
     $scope.$on('$ionicView.enter', function() {
         //order the order
-        $scope.localOrder = angular.copy($rootScope.order);
-                
-        $scope.localOrder.order_items.sort(function(a,b){
+   
+        $rootScope.order.order_items.sort(function(a,b){
             a = parseFloat(a.product_id + "." + a.product_option_id);
             b = parseFloat(b.product_id + "." + b.product_option_id);
             return a - b;
         })
-        //calculate and add valves
-        var valves = 0;
-        for (var index in $scope.localOrder.order_items){
-            if ($scope.localOrder.order_items[index].valves_required){
-                valves = valves + parseFloat($scope.localOrder.order_items[index].valves_required);
-            }
-        }
-        if (valves > 0){
-            $scope.localOrder.order_items.push({product_id:2, quantity:valves, price:valves*425, name:"Valves"});
-        }
         
-    })    
+        $scope.$parent.calculateValves();
+        
+    });
+    
+    $scope.discount = 0;
     
     
     $scope.getOrderTotal = function(){
-        var price = 0;
-        for (var index in $scope.localOrder.order_items){
-            price = price + parseFloat($scope.localOrder.order_items[index].price);
+        var price = 0, discount = 0;
+        $scope.discount = 0;
+        for (var index in $rootScope.order.order_items){
+            if ($rootScope.user && $rootScope.user.discount > 0){
+                discount = parseFloat($rootScope.order.order_items[index].price) * (parseFloat($rootScope.user.discount)/100);
+                price = price + ((parseFloat($rootScope.order.order_items[index].price)  - discount));
+                $scope.discount = $scope.discount + discount;
+            }
+            else{
+                price = price + parseFloat($rootScope.order.order_items[index].price);
+            }
+            
         }
-        return price;        
+        return price;       
     }
     
     $scope.removeItem = function(item, index){
-        $scope.localOrder.order_items.splice(index,1);
-        for (var index in $rootScope.order.order_items){
-            if ($rootScope.order.order_items[index].product_id === item.product_id && 
-                    $rootScope.order.order_items[index].product_option_id === item.product_option_id){
-                $rootScope.order.order_items.splice(index,1);
-                //$ionicHistory.clearCache();
-            }
-        }
-        
+        $rootScope.order.order_items.splice(index,1);
+        $scope.$parent.calculateValves();     
     }
     
     $scope.completeOrder = function(){
-        MainService.createOrder($scope.localOrder);
+        MainService.createOrder($rootScope.order);
         $ionicPopup.alert({
             title: 'Order Completed',
             template: 'Your order has been received and is now being processed. We will be in touch as your order progresses.',
@@ -289,7 +381,6 @@ angular.module('app.controllers', [])
                 }
                 }]
        }).then(function(res) {
-            $scope.localOrder = {order_items:[]};
             $rootScope.order.order_items = [];
             $ionicHistory.clearCache();
             $ionicHistory.clearHistory();            

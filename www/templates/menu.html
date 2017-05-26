@@ -5,10 +5,10 @@
     <ion-side-menu-content>
         <ion-nav-bar  class="bar-balanced" align-title="center">
             <ion-nav-buttons side="left">
-                <button class="button button-icon button-clear" ng-class="{'ion-android-cart' : platform !== 'ios', 'ion-ios-cart' : platform === 'ios'}" ui-sref="app.order">
+                <button   ng-if="user.permission !== 'public'" class="button button-icon button-clear" ng-class="{'ion-android-cart' : platform !== 'ios', 'ion-ios-cart' : platform === 'ios'}" ui-sref="app.order">
                 </button>
-                <span class="order-number" ui-sref="app.order">{{order.order_items.length}}</span>
-                <span class="order-total" ui-sref="app.order">${{getOrderPrice()}}</span>
+                <span   ng-if="user.permission !== 'public'" class="order-number" ui-sref="app.order">{{order.order_items.length}}</span>
+                <span   ng-if="user.permission !== 'public'" class="order-total" ui-sref="app.order">${{getOrderPrice()}}</span>
             </ion-nav-buttons>
             <ion-nav-buttons side="right">
                 <button class="button button-icon button-clear" ng-class="{'ion-android-menu' : platform !== 'ios', 'ion-navicon' : platform === 'ios'}" menu-toggle="right">
@@ -32,7 +32,7 @@
                   {{category.name}}
                 </ion-item>  
                 
-                <ion-item class="end-item" menu-close ui-sref="app.order" ng-class="{'completed':currentState === 'app.order'}">
+                <ion-item class="end-item" menu-close ui-sref="app.order" ng-class="{'completed':currentState === 'app.order'}" ng-if="user.permission !== 'public'">
                   My Order
                 </ion-item>          
             </ion-list>
