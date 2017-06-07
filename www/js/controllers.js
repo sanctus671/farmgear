@@ -84,7 +84,10 @@ angular.module('app.controllers', [])
     $scope.getOrderPrice = function(){
         var price = 0;
         for (var index in $rootScope.order.order_items){
-            if ($rootScope.user && $rootScope.user.discount > 0){
+            if ($rootScope.user.permission === "assistant" && $rootScope.currentManagedUser && $rootScope.currentManagedUser.discount > 0 && $rootScope.discountApplied){
+                price = price + (parseFloat($rootScope.order.order_items[index].price) * (1 - (parseFloat($rootScope.currentManagedUser.discount)/100)));              
+            }            
+            else if ($rootScope.user && $rootScope.user.discount > 0 && $rootScope.discountApplied){
                 price = price + (parseFloat($rootScope.order.order_items[index].price) * (1 - (parseFloat($rootScope.user.discount)/100)));
             }
             else{
@@ -339,13 +342,21 @@ angular.module('app.controllers', [])
     });
     
     $scope.discount = 0;
+    $rootScope.discountApplied = $rootScope.discountApplied ? $rootScope.discountApplied : false;
     
     
     $scope.getOrderTotal = function(){
         var price = 0, discount = 0;
         $scope.discount = 0;
+        console.log($rootScope.currentManagedUser);
         for (var index in $rootScope.order.order_items){
-            if ($rootScope.user && $rootScope.user.discount > 0){
+            
+            if ($rootScope.user.permission === "assistant" && $rootScope.currentManagedUser && $rootScope.currentManagedUser.discount > 0 && $rootScope.discountApplied){
+                discount = parseFloat($rootScope.order.order_items[index].price) * (parseFloat($rootScope.currentManagedUser.discount)/100);
+                price = price + ((parseFloat($rootScope.order.order_items[index].price)  - discount));
+                $scope.discount = $scope.discount + discount;                
+            }
+            else if ($rootScope.user && $rootScope.user.discount > 0 && $rootScope.discountApplied){
                 discount = parseFloat($rootScope.order.order_items[index].price) * (parseFloat($rootScope.user.discount)/100);
                 price = price + ((parseFloat($rootScope.order.order_items[index].price)  - discount));
                 $scope.discount = $scope.discount + discount;
@@ -358,14 +369,25 @@ angular.module('app.controllers', [])
         return price;       
     }
     
+    $scope.applyDiscount = function(){
+        $rootScope.discountApplied = true;  
+        $scope.getOrderTotal();
+    }
+    
     $scope.removeItem = function(item, index){
         $rootScope.order.order_items.splice(index,1);
-        $scope.$parent.calculateValves();     
+        $scope.$parent.calculateValves(); 
+        $ionicHistory.clearCache();
+        $ionicHistory.clearHistory();        
     }
     
     $scope.completeOrder = function(){
         
-        if ($rootScope.user && $rootScope.user.discount > 0){
+        if ($rootScope.currentManagedUser){
+            $rootScope.order.managed_user_id = $rootScope.currentManagedUser.id
+        }
+        
+        if ($rootScope.user && ($rootScope.user.discount > 0 || ($rootScope.currentManagedUser && $rootScope.currentManagedUser.discount > 0)) && $scope.discount > 0 && $rootScope.discountApplied){
             var order = angular.copy($rootScope.order);
             order.order_items.push({product_id:19, quantity:1, price:-($scope.discount), name:"Discount"});
             MainService.createOrder(order);
@@ -395,3 +417,69 @@ angular.module('app.controllers', [])
     
     
 })
+
+
+.controller('UsersController', function($scope, $timeout, $state, $ionicModal, $ionicHistory, $timeout, MainService, $rootScope, $stateParams) {
+    //to create orders on another customers behalf
+    $scope.$on('$ionicView.enter', function() {
+        if ($rootScope.user && $rootScope.user.permission !== "assistant"){
+            $state.go("app.home");
+        }
+        
+    });   
+    
+    $scope.managedUsers = [];
+    
+    $scope.newUser = {name:"",email:"", phone:"", discount:""};
+    
+    
+    $scope.getManagedUsers = function(){
+        MainService.getManagedUsers().then(function(data){
+            $scope.managedUsers = data;
+        })
+    }
+    
+    $scope.getManagedUsers();
+    
+    $scope.selectUser = function(user){
+        $rootScope.currentManagedUser = user;
+        $rootScope.discountApplied = false; 
+        $rootScope.order = {order_items:[]};
+        $ionicHistory.clearCache();
+        $ionicHistory.clearHistory();         
+    }
+    
+    $scope.clearUser = function(){
+        $rootScope.currentManagedUser = false;
+        $rootScope.discountApplied = false; 
+        $rootScope.order = {order_items:[]};
+        $ionicHistory.clearCache();
+        $ionicHistory.clearHistory();          
+    }
+    
+    
+    $ionicModal.fromTemplateUrl('templates/modals/create-user.html', {
+        scope: $scope,
+        animation: 'slide-in-up'
+        }).then(function(modal) {
+          $scope.userModal = modal;
+        });     
+    $scope.openCreateUser = function(){
+        $scope.userModal.show(); 
+    }
+    
+    $scope.createUser = function(){
+        $scope.userModal.hide();
+        var addedUser = angular.copy($scope.newUser);
+        $scope.managedUsers.push({user:addedUser});
+        $scope.newUser = {name:"",email:"", phone:"", discount:""};
+        MainService.createManagedUser(addedUser).then(function(data){
+            
+            addedUser.id = data.id;
+            $scope.selectUser(addedUser);
+            
+        })
+    }
+    
+    
+});

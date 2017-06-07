@@ -23,7 +23,7 @@
 
 
                 <div class='order-item order-page-total' ng-if="discount > 0">
-                    <span class='order-name'>Discount ({{user.discount}}%)</span>
+                    <span class='order-name'>Discount ({{currentManagedUser ? currentManagedUser.discount : user.discount}}%)</span>
                     <span class='order-price'>- ${{discount}}</span>
                 </div>  
                 
@@ -35,6 +35,9 @@
             </div>
 
             <div class="order-actions" ng-if='order.order_items.length > 0'>
+                <button class="button button-light" ng-click="applyDiscount()"  ng-if='user.discount > 0 && !discountApplied'>
+                    Apply discount
+                </button>                 
                 <button class="button button-balanced" ng-click="completeOrder()">
                     Complete Order
                 </button>                 

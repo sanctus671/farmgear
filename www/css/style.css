@@ -231,7 +231,19 @@ ion-side-menu .completed  .item-content:before{
   
 }
 
+.assistant-info{
+text-align: center;
+    padding: 10px 5px;    
+}
+.assistant-info p{
+        font-size: 12px;
+}
 
+.assistant-info h3{
+       padding: 0px;
+    margin: 0px;
+    color: #00561d; 
+}
   
 
 /* Login

@@ -1,0 +1,25 @@
+<ion-view view-title="Users">
+    <ion-content>
+
+        <div class="list">
+            <a class="item" href="#" ng-click="clearUser(managedUser.user)">
+                Myself
+                <span class="item-note">
+                    Create order
+                </span>
+            </a> 
+            <a class="item" href="#" ng-repeat="managedUser in managedUsers" ng-click="selectUser(managedUser.user)">
+                {{managedUser.user.name}}
+                <span class="item-note">
+                    Create order
+                </span>
+            </a>   
+        </div>
+        
+        <div class="order-actions">                
+            <button class="button button-balanced" ng-click="openCreateUser()">
+                Create User
+            </button>                 
+        </div>      
+    </ion-content>
+</ion-view>

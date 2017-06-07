@@ -5,9 +5,7 @@
             <p>{{category.name}}</p>
         </div>     
 
-        <div ng-show="category.description" class="category-description" ng-bind-html="category.description">
 
-        </div>
         
         
         <div class="category-products" ng-show="products.length > 0">
@@ -67,6 +65,10 @@
             
             
         </div>
+        
+        <div ng-show="category.description" class="category-description" ng-bind-html="category.description">
+
+        </div>        
 
         <div class="category-bar bar bar-dark" ui-sref="app.category({id:categories[(currentIndex + 1)].id})" ng-if="categories.length > (currentIndex + 1)">
             <div class="title">Next ({{categories[(currentIndex + 1)].name}}) <i class="icon ion-ios-arrow-forward"></i></div>

@@ -113,5 +113,16 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.config',
         }
     })
     
+    .state('app.users', {
+        url: '/users',
+        requireAuth:true,
+        views: {
+            'menuContent': {
+              templateUrl: 'templates/users.html',
+              controller: 'UsersController'
+            }
+        }
+    })    
+    
   $urlRouterProvider.otherwise('/app/home');
 });

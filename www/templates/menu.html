@@ -22,11 +22,21 @@
     
     <ion-side-menu side="right"  width="230">
         <ion-content>
+            <div class="assistant-info" ng-if="user.permission === 'assistant' && currentManagedUser.id">
+                <p>Currently creating order on behalf of</p>
+                <h3>{{currentManagedUser.name}}</h3>
+            </div>
             <ion-list>
+                
+                <ion-item class="start-item completed" menu-close ui-sref="app.users" ng-if="user.permission === 'assistant'">
+                  Manage Users
+                </ion-item>  
                 
                 <ion-item class="start-item completed" menu-close ui-sref="app.home">
                   Home
                 </ion-item>  
+                
+                
                 
                 <ion-item class="category-item" ng-repeat="category in categories" ui-sref="app.category({id:category.id})" menu-close ng-class="{'completed':currentState === 'app.order' || (currentState === 'app.category' && category.id <= stateIndex)}">
                   {{category.name}}

@@ -203,7 +203,38 @@ angular.module('app.services', [])
 
         return deferred.promise;   
     }    
+
+    this.getManagedUsers = function(){
+        var deferred = $q.defer();
+        var token = AuthService.getToken();
+        if (!token){deferred.reject("No token");} 
+        $http.get(API_URL + '/managedusers?token=' + token)
+        .success(function(data) {
+            deferred.resolve(data.managed_users);
+        })
+        .error(function(data) {
+            if (data && data.error && data.error.status_code === 401){AuthService.logout();$state.go("login")}
+            deferred.resolve(data);
+        });
+
+        return deferred.promise;   
+    }     
     
+    this.createManagedUser = function(user){
+        var deferred = $q.defer();
+        var token = AuthService.getToken();
+        if (!token){deferred.reject("No token");} 
+        $http.post(API_URL + '/managedusers?token=' + token, user)
+        .success(function(data) {
+            deferred.resolve(data.user);
+        })
+        .error(function(data) {
+            if (data && data.error && data.error.status_code === 401){AuthService.logout();$state.go("login")}
+            deferred.reject(data);
+        });
+
+        return deferred.promise;   
+    }     
     
 })
 
