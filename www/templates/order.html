@@ -9,6 +9,11 @@
                 <br>Go back and choose something!
             </div>
             
+            <div class='order-logo' ng-if='order.order_items.length > 0'>
+                <img src="img/logo.png" /> 
+            </div>
+            
+            
             <div class='order-list' ng-if='order.order_items.length > 0'>
                 <div class='order-item' ng-repeat='item in order.order_items' ng-class="{'order-option':item.product_option_id}">
                     <span ng-if="item.name !== 'Valves'" class="order-remove" ng-click="removeItem(item, $index)">Remove</span>
@@ -33,11 +38,27 @@
                 </div>                
                 
             </div>
+            
+            <div class='order-notes list' ng-if='order.order_items.length > 0'>
+                <label class="item item-input">
+                    <textarea ng-keyup="expandText()" ng-keydown="expandText()" id="notes-input" placeholder="Order Notes" ng-model="order.notes"></textarea>
+                </label>                
+            </div>
 
             <div class="order-actions" ng-if='order.order_items.length > 0'>
-                <button class="button button-light" ng-click="applyDiscount()"  ng-if='user.discount > 0 && !discountApplied'>
-                    Apply discount
-                </button>                 
+                <div class="row">
+                    <div class="col"   ng-if='user.discount > 0 && !discountApplied'>
+                        <button class="button button-light" ng-click="applyDiscount()">
+                            Apply discount
+                        </button>                         
+                    </div>
+                    <div class="col">
+                        <button class="button button-assertive" ng-click="clearCart()">
+                            Clear Cart
+                        </button>                         
+                    </div>
+                </div>
+               
                 <button class="button button-balanced" ng-click="completeOrder()">
                     Complete Order
                 </button>                 

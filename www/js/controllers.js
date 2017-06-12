@@ -67,7 +67,7 @@ angular.module('app.controllers', [])
 })
 
 
-.controller('AppController', function($scope, $timeout, $ionicModal, $timeout, MainService, $rootScope, $stateParams) {
+.controller('AppController', function($scope, $timeout, AuthService, $ionicModal, $timeout, MainService, $rootScope, $stateParams, $ionicHistory, $state) {
     $scope.categories = [];
     
     $rootScope.order = {order_items:[]};
@@ -84,7 +84,7 @@ angular.module('app.controllers', [])
     $scope.getOrderPrice = function(){
         var price = 0;
         for (var index in $rootScope.order.order_items){
-            if ($rootScope.user.permission === "assistant" && $rootScope.currentManagedUser && $rootScope.currentManagedUser.discount > 0 && $rootScope.discountApplied){
+            if ($rootScope.user && $rootScope.user.permission === "assistant" && $rootScope.currentManagedUser && $rootScope.currentManagedUser.discount > 0 && $rootScope.discountApplied){
                 price = price + (parseFloat($rootScope.order.order_items[index].price) * (1 - (parseFloat($rootScope.currentManagedUser.discount)/100)));              
             }            
             else if ($rootScope.user && $rootScope.user.discount > 0 && $rootScope.discountApplied){
@@ -116,6 +116,16 @@ angular.module('app.controllers', [])
         if (valves > 0){
             $rootScope.order.order_items.push({product_id:2, quantity:valves, price:valves*425, name:"Valves"});
         } 
+    }
+    
+    $scope.logout = function(){
+            $rootScope.order.notes = "";
+            $rootScope.order.order_items = [];
+            //$ionicHistory.clearCache();
+            $rootScope.$broadcast("resetOrder");
+            $ionicHistory.clearHistory();   
+            AuthService.logout();
+            $state.go('login');         
     }
     
     $scope.$on('$ionicView.loaded', function() {
@@ -167,11 +177,21 @@ angular.module('app.controllers', [])
     
     $scope.currentIndex = 999;
     
+    $scope.addedToOrder = {};
+    
     $scope.$on('$ionicView.enter', function() {
         $rootScope.stateIndex = parseInt($stateParams.id);
     })
     
-    $scope.addedToOrder = {};
+    $rootScope.$on("resetOrder",function(){
+        $scope.selectedOptions = {};
+        $scope.selectedOption = {}; //for popup
+
+        $scope.selectedProduct = {};   
+        $scope.addedToOrder = {};
+    })
+    
+    
     
     $scope.getProducts = function(){
         $scope.products = $scope.category.products; 
@@ -351,7 +371,7 @@ angular.module('app.controllers', [])
         console.log($rootScope.currentManagedUser);
         for (var index in $rootScope.order.order_items){
             
-            if ($rootScope.user.permission === "assistant" && $rootScope.currentManagedUser && $rootScope.currentManagedUser.discount > 0 && $rootScope.discountApplied){
+            if ($rootScope.user && $rootScope.user.permission === "assistant" && $rootScope.currentManagedUser && $rootScope.currentManagedUser.discount > 0 && $rootScope.discountApplied){
                 discount = parseFloat($rootScope.order.order_items[index].price) * (parseFloat($rootScope.currentManagedUser.discount)/100);
                 price = price + ((parseFloat($rootScope.order.order_items[index].price)  - discount));
                 $scope.discount = $scope.discount + discount;                
@@ -377,7 +397,7 @@ angular.module('app.controllers', [])
     $scope.removeItem = function(item, index){
         $rootScope.order.order_items.splice(index,1);
         $scope.$parent.calculateValves(); 
-        $ionicHistory.clearCache();
+        //$ionicHistory.clearCache();
         $ionicHistory.clearHistory();        
     }
     
@@ -407,14 +427,27 @@ angular.module('app.controllers', [])
                 }]
        }).then(function(res) {
             $rootScope.order.order_items = [];
-            $ionicHistory.clearCache();
+            //$ionicHistory.clearCache();
+            $rootScope.$broadcast("resetOrder");
             $ionicHistory.clearHistory();            
             $state.go('app.home');
         });       
     }
     
+    $scope.clearCart = function(){
+            $rootScope.order.notes = "";
+            $rootScope.order.order_items = [];
+            //$ionicHistory.clearCache();
+            $rootScope.$broadcast("resetOrder");
+            $ionicHistory.clearHistory();            
+            $state.go('app.home');        
+    }
     
     
+    $scope.expandText = function(){
+            var element = document.getElementById("notes-input");
+            element.style.height =  element.scrollHeight + "px";
+    }    
     
 })
 

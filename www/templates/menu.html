@@ -26,6 +26,11 @@
                 <p>Currently creating order on behalf of</p>
                 <h3>{{currentManagedUser.name}}</h3>
             </div>
+            
+            <div class="assistant-info user-info" ng-if="user && user.name && (user.permission !== 'assistant' || (user.permission === 'assistant' && !currentManagedUser.id))">
+                <p>Hi there,</p>
+                <h3>{{user.name}}</h3>
+            </div>            
             <ion-list>
                 
                 <ion-item class="start-item completed" menu-close ui-sref="app.users" ng-if="user.permission === 'assistant'">
@@ -48,7 +53,14 @@
             </ion-list>
 
             <img src="img/farmgear.png" class="sidebar-logo" />  
-
+            <div class="sidebar-contact">
+                <a href="http://www.farmgear.co.nz">www.farmgear.co.nz</a>
+                <a href="tel:063568516">06 356 8516</a>
+            </div>
+            
+            <div class="sidebar-logout">
+                <a ng-click="logout()">Logout</a>
+            </div>
 
         </ion-content>
     </ion-side-menu>
