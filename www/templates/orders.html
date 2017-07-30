@@ -1,6 +1,10 @@
 <ion-view view-title="Saved Orders">
     <ion-content>
-
+        
+        <div class='empty-order' ng-if='orders.length < 1'>
+            <i class='icon ion-document'></i>
+            No saved orders.
+        </div>
 
         <div class="list">
 
