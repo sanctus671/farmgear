@@ -31,9 +31,9 @@
                     <div class="product-options" ng-show="showOptions">
                         <ion-list>
 
-                            <ion-checkbox ng-model="selectedOptions[option.name]" ng-repeat="option in product.product_options" ng-change="updateOptions(option, product, selectedOptions[option.name])" class="checkbox-balanced">
+                            <ion-checkbox ng-style="{'background-color':option.group_name ? assignedColors[option.group_name] : '#fff'}" ng-model="selectedOptions[option.name]" ng-repeat="option in product.product_options" ng-change="updateOptions(option, product, selectedOptions[option.name],false)" class="checkbox-balanced">
                                 <div class="option-title">
-                                    <span class="option-name">{{option.name}}</span>
+                                    <span class="option-name" >{{option.group_name ? option.group_name + " - " : ""}}{{option.name}}</span>
                                     <span class="option-cost"  ng-if="user.permission !== 'public'">${{option.price}}</span>
                                 </div>
                                 <div class="option-details">Part Number: {{option.part_number ? option.part_number : "default"}}, Valves Required: {{option.valves_required}}</div>

@@ -37,7 +37,7 @@
                   Manage Users
                 </ion-item>  
                 
-                <ion-item class="start-item completed" menu-close ui-sref="app.home">
+                <ion-item class="start-item" menu-close ui-sref="app.home" ng-class="{'completed':currentState !== 'app.orders' && currentState !== 'app.calculator'}">
                   Home
                 </ion-item>  
                 
@@ -49,7 +49,15 @@
                 
                 <ion-item class="end-item" menu-close ui-sref="app.order" ng-class="{'completed':currentState === 'app.order'}" ng-if="user.permission !== 'public'">
                   My Order
-                </ion-item>          
+                </ion-item>   
+                
+                <ion-item class="end-item" menu-close ui-sref="app.orders" ng-class="{'completed':currentState === 'app.orders'}" ng-if="user.permission !== 'public'">
+                  Saved Orders
+                </ion-item>    
+                
+                <ion-item class="end-item" menu-close ui-sref="app.calculator" ng-class="{'completed':currentState === 'app.calculator'}" ng-if="user.permission !== 'public'">
+                  Calculator
+                </ion-item>                 
             </ion-list>
 
             <img src="img/farmgear.png" class="sidebar-logo" />  

@@ -179,6 +179,9 @@ angular.module('app.controllers', [])
     
     $scope.addedToOrder = {};
     
+    $scope.assignedColors = {};
+    
+    
     $scope.$on('$ionicView.enter', function() {
         $rootScope.stateIndex = parseInt($stateParams.id);
     })
@@ -195,12 +198,17 @@ angular.module('app.controllers', [])
     
     $scope.getProducts = function(){
         $scope.products = $scope.category.products; 
+
         for (var index in $scope.products){
             if ($scope.products[index].gallery){
                 $scope.products[index].gallery = JSON.parse($scope.products[index].gallery);
+                $scope.assignColors($scope.products[index]);
+                //$scope.setDefaults($scope.products[index]);
             }
         }
     }
+    
+    
     
     $scope.getCategory = function(){
         for (var index in $scope.$parent.categories){
@@ -234,6 +242,118 @@ angular.module('app.controllers', [])
         $scope.infoModal.show();       
     } 
     
+    $scope.setDefaults = function(product){
+        for (var index in product.product_rules){
+            var rule = product.product_rules[index];
+            if (rule.type === "default"){
+                var requirements = rule.requirements.split(",");
+                for (var index2 in product.product_options){
+                    var option = product.product_options[index2]
+                    if (requirements.indexOf(option.id) > -1){
+                        $scope.selectedOptions[option.name] = true;
+                        $scope.updateOptions(option, product, $scope.selectedOptions[option.name],true)
+                    }
+                }
+            }
+            
+        }
+    }
+    
+    $scope.checkRequiredRules = function(product, productOption){
+       var addedOptions = []; 
+       for (var index in product.product_rules){
+            var rule = product.product_rules[index];
+            if (parseInt(rule.product_option_id) === parseInt(productOption.id) && rule.type === "requires"){
+                var requirements = rule.requirements.split(",");
+                for (var index2 in product.product_options){
+                    var option = product.product_options[index2]
+                    if (requirements.indexOf(option.id) > -1 && !$scope.selectedOptions[option.name]){
+                        $scope.selectedOptions[option.name] = true;
+                        $scope.updateOptions(option, product, $scope.selectedOptions[option.name],false);
+                        addedOptions.push((option.group_name ? option.group_name + " - " : "") + option.name);
+                    }
+                }
+            }
+            
+        } 
+        
+        if (addedOptions.length > 0){
+            var html = 'The following have been added to your order: <ul>';
+            for (var index in addedOptions){
+                html = html + "<li>" + addedOptions[index] + "</li>";
+            }
+            html = html + "</ul>";
+            $ionicPopup.alert({
+              template: html,
+              title: 'Required Options',
+              subTitle: 'This options requires other options to be added',
+              scope: $scope,   
+              buttons: [{ text: 'OK', type: 'button-balanced'}]
+            });        
+               
+        }
+  
+    }
+    
+    
+    $scope.checkLimitRules = function(product, lastOption){
+        for (var index in product.product_rules){
+            var rule = product.product_rules[index];
+            if (rule.type === "limit"){
+                var requirements = rule.requirements.split(",");
+                var options = [];
+                //check if more than one of the requirements is added
+                for (var index2 in product.product_options){
+                    var option = product.product_options[index2]
+                    if (requirements.indexOf(option.id) > -1 && $scope.selectedOptions[option.name]){
+                        options.push(angular.copy(option));
+                    }
+                }
+                
+                if (options.length > 1){
+                    for (var index in options){
+                        if (parseInt(options[index].id) === parseInt(lastOption.id)){
+                            
+                            var option = options[index];
+
+                            options.splice(index,1);
+                            options.unshift(option);
+                            
+                        }
+                    }
+                    while (options.length > 1){
+                        var option = options.pop();
+                        $scope.selectedOptions[option.name] = false;
+                        $scope.updateOptions(option,product,false, false);
+                    }
+                }
+            }
+            
+        }
+    }    
+    
+    
+    
+    $scope.assignColors = function(product){
+        var colors = ["#e1f7d5", "#ffbdbd", "#c9c9ff", "#f1cbff", "#bae1ff", "#baffc9", "#ffffba", "#ffdfba", "#ffb3ba"];
+        
+        var colorIndex = 0;
+        for (var index in product.product_options){
+            var option = product.product_options[index];
+            if (option.group_name && !(option.group_name in $scope.assignedColors)){
+                if (colorIndex > 8){
+                   colors.push("hsl(" + 360 * Math.random() + ',' +
+                 (25 + 70 * Math.random()) + '%,' + 
+                 (85 + 10 * Math.random()) + '%)');
+                }
+                $scope.assignedColors[option.group_name] = colors[colorIndex];
+                colorIndex = colorIndex + 1;       
+            }
+        }
+        
+        
+    }
+    
     $scope.addToOrder = function(product){
         $scope.addedToOrder[product.name] = true;
         var item = {product_id:product.id, quantity:1, price: product.price, name:product.name, spare_valves:product.spare_valves};
@@ -247,13 +367,16 @@ angular.module('app.controllers', [])
         if (!exists){
             $rootScope.order.order_items.push(item);
             $scope.$parent.calculateValves();
+            $scope.setDefaults(product);
         }
+        
+        
     }
     
     $scope.removeFromOrder = function(product){
         $scope.addedToOrder[product.name] = false;
         for (var index in $rootScope.order.order_items){
-            if ($rootScope.order.order_items[index].product_id === product.id && !$rootScope.order.order_items[index].product_option_id){
+            if ($rootScope.order.order_items[index].product_id === product.id /*&& !$rootScope.order.order_items[index].product_option_id*/){
                 $rootScope.order.order_items.splice(index,1);
                 $scope.$parent.calculateValves();
             }
@@ -261,19 +384,24 @@ angular.module('app.controllers', [])
     }    
     
     
-    $scope.updateOptions = function(option, product, selected){
+    $scope.updateOptions = function(option, product, selected, defaultAdd){
         if ($rootScope.user && $rootScope.user.permission === "public"){
             return;
         }
+
         if (selected){
-            if (!$scope.addToOrder[product.name]){$scope.addToOrder(product);}
+            if (!$scope.addedToOrder[product.name]){$scope.addToOrder(product);}
             var item = {product_option_id:option.id, product_id: product.id,  quantity:1, price: option.price, name:option.name, valves_required:option.valves_required, product_name:product.name};
             if (option.allow_multiple){
-                $scope.addQuantity(item);
+                $scope.addQuantity(item, product);
             }
             else{
                 $rootScope.order.order_items.push(item);
                 $scope.$parent.calculateValves();
+            }
+            if (!defaultAdd){
+                $scope.checkRequiredRules(product, option);
+                $scope.checkLimitRules(product, option);
             }
         }
         else{
@@ -284,6 +412,8 @@ angular.module('app.controllers', [])
                 }
             }
         }
+        
+        
     }
 
     
@@ -306,16 +436,26 @@ angular.module('app.controllers', [])
           }).then(function(res) {
                 if (res){
                     $scope.selectedOptions[option.name];
-                    $scope.updateOptions(option, product, selectedOptions[option.name])
+                    $scope.updateOptions(option, product, selectedOptions[option.name], false)
                 }
             });        
     }  
     
     
-    $scope.addQuantity = function(item){
+    $scope.addQuantity = function(item, product){
         $scope.selectedOption = item;
+        //check for min quantity rule
+        var min = 1;
+       for (var index in product.product_rules){
+            var rule = product.product_rules[index];
+            if (parseInt(rule.product_option_id) === parseInt(item.product_option_id) && rule.type === "quantity"){
+                min  = parseFloat(rule.quantity);
+                $scope.selectedOption.quantity = min;
+            }
+        }
+        
         $ionicPopup.show({
-          template: '<input type="number" ng-model="selectedOption.quantity" class="quantity-input">',
+          template: '<input type="number" ng-model="selectedOption.quantity" class="quantity-input" min="' + min + '">',
           title: 'Select Quantity',
           subTitle: 'Choose how many of this option you want to add',
           scope: $scope,
@@ -346,7 +486,7 @@ angular.module('app.controllers', [])
     
 })
 
-.controller('OrderController', function($scope, $rootScope, $ionicPopup, $state, $ionicHistory, MainService) {
+.controller('OrderController', function($scope, $rootScope, $ionicPopup, $state, $ionicHistory, MainService, DraftOrdersService) {
 
     $scope.$on('$ionicView.enter', function() {
         //order the order
@@ -368,7 +508,6 @@ angular.module('app.controllers', [])
     $scope.getOrderTotal = function(){
         var price = 0, discount = 0;
         $scope.discount = 0;
-        console.log($rootScope.currentManagedUser);
         for (var index in $rootScope.order.order_items){
             
             if ($rootScope.user && $rootScope.user.permission === "assistant" && $rootScope.currentManagedUser && $rootScope.currentManagedUser.discount > 0 && $rootScope.discountApplied){
@@ -449,6 +588,32 @@ angular.module('app.controllers', [])
             element.style.height =  element.scrollHeight + "px";
     }    
     
+    $scope.saveOrder = function(){
+        var createdDate = new Date();
+        $rootScope.order.created_at = createdDate.getDate() + "/" + (createdDate.getMonth() + 1) + "/" + createdDate.getFullYear() + " at " + createdDate.getHours() + ":" + createdDate.getMinutes();
+        $rootScope.order.total = $scope.getOrderTotal();
+        $rootScope.order.discount = $scope.discount;
+        DraftOrdersService.storeOrder(angular.copy($rootScope.order));
+        $rootScope.order.notes = "";
+        $rootScope.order.order_items = [];
+        //$ionicHistory.clearCache();
+        $rootScope.$broadcast("resetOrder");
+        $ionicHistory.clearHistory(); 
+        $state.go('app.orders'); 
+        
+        $ionicPopup.alert({
+            title: 'Order Saved',
+            template: 'Your order has been saved. You can view your saved orders under Saved Orders in the side menu.',
+            buttons:[{
+                text: 'OK',
+                type: 'button-balanced',
+                onTap: function(e) {
+                  return true;
+                }
+                }]
+       })        
+    }
+    
 })
 
 
@@ -515,4 +680,202 @@ angular.module('app.controllers', [])
     }
     
     
-});
+})
+
+
+
+.controller('OrdersController', function($scope, $rootScope, $ionicPopup, $state, $ionicHistory, MainService, DraftOrdersService, $ionicModal) {
+    $scope.orders = [];
+    $scope.order = {}; //for viewing specific order
+    $scope.orderIndex = false;
+    
+    $scope.getOrders = function(){
+        $scope.orders = DraftOrdersService.getOrders();
+    }
+    
+    $scope.$on('$ionicView.enter', function() {
+        $scope.getOrders();
+    });     
+    
+    
+    $scope.removeOrder = function(e, order, orderIndex){
+        e.preventDefault(); // added for ionic
+        e.stopPropagation(); 
+        DraftOrdersService.removeOrder(orderIndex);
+        $scope.getOrders();        
+        
+    }
+
+    $ionicModal.fromTemplateUrl('templates/modals/view-draft-order.html', {
+        scope: $scope,
+        animation: 'slide-in-up'
+        }).then(function(modal) {
+          $scope.orderModal = modal;
+        });   
+ 
+    $scope.viewOrder = function(order, index){
+        $scope.order = order;
+        $scope.orderIndex = index;
+        $scope.orderModal.show();
+    }
+    
+    $scope.loadOrder = function(){
+        $ionicPopup.show({
+          template: 'This order will overwrite your current order. You will then be able to modify it.',
+          title: 'Confirm',
+          scope: $scope,
+          buttons: [
+            { text: 'Cancel' },
+            {
+              text: '<b>OK</b>',
+              type: 'button-balanced',
+              onTap: function(e) {
+                return true;
+                }
+              
+            }
+          ]
+        }).then(function(res) {
+            if (res){
+                $scope.orderModal.hide();
+                $rootScope.order = angular.copy($scope.order);
+                DraftOrdersService.removeOrder($scope.orderIndex);
+                $scope.getOrders();
+                $state.go('app.order'); 
+            }
+        });       
+        
+        
+    }
+   
+    
+    
+    $scope.completeOrder = function(){
+
+        if ($scope.order.discount > 0){
+            var order = angular.copy($scope.order);
+            order.order_items.push({product_id:19, quantity:1, price:-(order.discount), name:"Discount"});
+            MainService.createOrder(order);
+        }
+        else{
+            MainService.createOrder($scope.order);
+        }
+        $ionicPopup.alert({
+            title: 'Order Completed',
+            template: 'Your order has been received and is now being processed. We will be in touch as your order progresses.',
+            buttons:[{
+                text: 'OK',
+                type: 'button-balanced',
+                onTap: function(e) {
+                  return true;
+                }
+                }]
+       }).then(function(res) {
+            $scope.orderModal.hide();
+            DraftOrdersService.removeOrder($scope.orderIndex);
+            $scope.getOrders();
+        });       
+    }    
+    
+        
+})
+
+
+.controller('CalculatorController', function($scope, $rootScope, $ionicPopup, $state, $ionicHistory, MainService, $ionicModal) {
+    $scope.products = [];
+    $scope.product = {};
+    
+    $scope.getProducts = function(){
+        $scope.products = [];
+        var options = {};
+        var products = {};
+        for (var index in $rootScope.order.order_items){
+            var product = $rootScope.order.order_items[index];
+            if (!product.product_option_id){
+                product["options"] = [];
+                products[product.product_id] = product;
+            }
+            else if (product.product_id in options){
+                options[product.product_id].push(product);
+            }
+            else{
+                options[product.product_id] = [product];
+            }
+        }
+        
+        for (var index in options){
+            products[index].options = options[index];
+            $scope.products.push(products[index]);
+        }
+    }
+    
+    
+    
+    $scope.$on('$ionicView.enter', function() {
+        $scope.getProducts();
+    });     
+    
+    $ionicModal.fromTemplateUrl('templates/modals/calculator.html', {
+        scope: $scope,
+        animation: 'slide-in-up'
+        }).then(function(modal) {
+          $scope.calculatorModal = modal;
+        });   
+ 
+    $scope.viewCalculator = function(product){
+        if (product){
+            $scope.product = product;
+        }
+        else {
+            $scope.product = {price:"", custom:true, name:"Custom Calculation"}
+        }
+        $scope.calculatorModal.show();
+    }  
+    
+    $scope.getDiscount = function(price){
+        if (!$rootScope.user){return 0;}
+        price = price ? price : 0;
+        return price - (parseFloat(price) * (parseFloat($rootScope.user.discount)/100));
+    }
+
+    $scope.emailCalculations = function(product){
+
+        product.discount = $scope.getDiscount(product.price);
+        product.margin_price = product.sell_price > 0 ? product.sell_price - $scope.getDiscount(product.price) : 0
+        product.rrp = product.price > 0 && product.sell_price > 0 ? (1 - (product.sell_price/product.price)) * 100 : 0;
+        
+        MainService.emailCalculations(product).then(function(){
+            $ionicPopup.alert({
+                title: 'Calculations Sent',
+                template: 'These details have been sent to your email addesss. You will receive them shortly.',
+                buttons:[{
+                    text: 'OK',
+                    type: 'button-balanced',
+                    onTap: function(e) {
+                      return true;
+                    }
+                    }]
+           })           
+        })
+    }
+    
+    $scope.updateSellPrice = function(){
+        $scope.product.sell_price = $scope.product.margin > 0 && $scope.product.price > 0 ? 
+            Math.round(($scope.getDiscount($scope.product.price) / (1 - ($scope.product.margin/100)))*100)/100
+            : 0;
+    }
+    
+    $scope.updateMargin = function(){
+        $scope.product.margin = $scope.product.sell_price > 0 && $scope.product.price > 0  ? 
+            Math.round(((($scope.product.sell_price - $scope.getDiscount($scope.product.price)) / $scope.product.sell_price) * 100)*100)/100 
+            : 0;
+    }
+    
+    $scope.updateCalculations = function(){
+        if ($scope.product.sell_price){
+            $scope.updateMargin();
+        }
+    }
+    
+        
+})

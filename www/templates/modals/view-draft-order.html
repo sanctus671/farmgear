@@ -1,0 +1,61 @@
+<ion-modal-view>
+	<ion-header-bar class="bar-balanced" align-title="center">
+		<div class="modal-button" ng-click="orderModal.hide()">Close</div>            
+		<h1 class="title modal-title  title-center">Saved Order</h1>
+	</ion-header-bar>
+	<ion-content >
+
+        <div class='order-content'>
+        
+            <div class='empty-order' ng-if='order.order_items.length < 1'>
+                <i class='icon' ng-class="{'ion-android-cart' : platform !== 'ios', 'ion-ios-cart' : platform === 'ios'}"></i>
+                No items in this order.
+            </div>
+
+            
+            <div class='order-list' ng-if='order.order_items.length > 0'>
+                <div class='order-item' ng-repeat='item in order.order_items' ng-class="{'order-option':item.product_option_id}">
+                    <span class='order-name'>
+                        {{item.name}}
+                        <span class='order-quantity' ng-if="item.name === 'Valves' || item.quantity > 1">(Quantity: {{item.quantity}})</span>
+                    </span>
+                    
+                    <span class='order-price'>${{item.price}}</span>
+                </div>
+                
+                
+                <div class='order-item order-page-total' ng-if="order.discount > 0">
+                    <span class='order-name'>Discount</span>
+                    <span class='order-price'>- ${{order.discount}}</span>
+                </div>  
+                
+                <div class='order-item order-page-total'>
+                    <span class='order-name'>Total</span>
+                    <span class='order-price'>${{order.total}} (+$GST)</span>
+                </div>                
+                
+            </div>
+            
+            <div class='order-notes list' ng-if='order.order_items.length > 0'>
+                <p>{{order.notes}}</p>              
+            </div>
+
+            <div class="order-actions" ng-if='order.order_items.length > 0'>
+
+               
+                <button class="button button-balanced" ng-click="completeOrder()">
+                    Complete Order
+                </button> 
+                
+                <div class="row save-order">
+                    <a ng-click="loadOrder()" class="save-order">Modify this order</a>
+                </div>
+            </div>
+            
+            
+            
+        </div>
+        
+      
+    </ion-content>
+</ion-modal-view>

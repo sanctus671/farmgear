@@ -1,0 +1,19 @@
+<ion-view view-title="Calculator">
+    <ion-content>
+
+
+        <div class="list">
+
+          <a class="item" ng-repeat="product in products" ng-click="viewCalculator(product)">
+              <h2>{{product.name}}</h2>
+              <p>Includes {{product.options.length}} options</p>
+          </a>
+            
+          <a class="item" ng-click="viewCalculator(false)">
+              <h2>Custom</h2>
+              <p>Use this to set your own retail prices</p>
+          </a>
+        </div>
+        
+    </ion-content>
+</ion-view>

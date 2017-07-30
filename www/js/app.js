@@ -113,6 +113,29 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.config',
         }
     })
     
+    
+    .state('app.orders', {
+        url: '/orders',
+        requireAuth:true,
+        views: {
+            'menuContent': {
+              templateUrl: 'templates/orders.html',
+              controller: 'OrdersController'
+            }
+        }
+    })
+    
+    .state('app.calculator', {
+        url: '/calculator',
+        requireAuth:true,
+        views: {
+            'menuContent': {
+              templateUrl: 'templates/calculator.html',
+              controller: 'CalculatorController'
+            }
+        }
+    })    
+    
     .state('app.users', {
         url: '/users',
         requireAuth:true,

@@ -649,6 +649,12 @@ font-weight: normal;
     margin-top: 20px;
 }
 
+.order-actions .row.save-order{
+    text-align: center;
+    display: block;
+    padding: 20px;
+}
+
 .order-actions .row, .order-actions .col{
         padding: 0px;
 }

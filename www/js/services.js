@@ -234,7 +234,49 @@ angular.module('app.services', [])
         });
 
         return deferred.promise;   
+    }    
+    
+    
+    this.emailCalculations = function(product){
+        var deferred = $q.defer();
+        var token = AuthService.getToken();
+        if (!token){deferred.reject("No token");} 
+        $http.post(API_URL + '/calculations?token=' + token, product)
+        .success(function(data) {
+            deferred.resolve(data);
+        })
+        .error(function(data) {
+            if (data && data.error && data.error.status_code === 401){AuthService.logout();$state.go("login")}
+            deferred.reject(data);
+        });
+
+        return deferred.promise;   
+    }      
+    
+    
+})
+
+.service('DraftOrdersService', function ($http,$interval, $q, API_URL, $rootScope, $cordovaSQLite, AuthService){
+    var draftOrders = this;
+    
+    
+    this.getOrders = function(){
+        var data = window.localStorage.fg_draft_orders ? JSON.parse(window.localStorage.fg_draft_orders) : [];
+        return data;        
     }     
+  
+    this.storeOrder = function(order){
+        var orders = draftOrders.getOrders();
+        order.requestid = orders.length < 1 ? 1 : parseInt(orders[orders.length - 1].requestid) + 1;
+        orders.push(order);
+        window.localStorage.fg_draft_orders = JSON.stringify(orders);
+    }
+    
+    this.removeOrder = function(index){
+        var orders = draftOrders.getOrders();
+        orders.splice(index, 1);
+        window.localStorage.fg_draft_orders = JSON.stringify(orders);
+    }   
     
 })
 
