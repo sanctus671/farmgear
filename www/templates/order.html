@@ -39,6 +39,10 @@
                 
             </div>
             
+            <div class="row order-calculator"  ng-if='order.order_items.length > 0'>
+                <a ui-sref="app.calculator">Do calculations on this order</a>
+            </div>
+            
             <div class='order-notes list' ng-if='order.order_items.length > 0'>
                 <label class="item item-input">
                     <textarea ng-keyup="expandText()" ng-keydown="expandText()" id="notes-input" placeholder="Order Notes" ng-model="order.notes"></textarea>
@@ -52,6 +56,11 @@
                             Apply discount
                         </button>                         
                     </div>
+                    <div class="col"   ng-if='user.discount > 0 && discountApplied'>
+                        <button class="button button-light assertive-text" ng-click="clearDiscount()">
+                            Clear discount
+                        </button>                         
+                    </div>                    
                     <div class="col">
                         <button class="button button-assertive" ng-click="clearCart()">
                             Clear Cart
@@ -64,7 +73,13 @@
                 </button> 
                 
                 <div class="row save-order">
-                    <a ng-click="saveOrder()">Save this order</a>
+                    <div class="col">
+                        <a ng-click="emailOrder()">Email this order</a>
+                    </div>
+                    <div class="col">
+                        <a ng-click="preSaveOrder()">Save this order</a>
+                    </div>
+                    
                 </div>
             </div>
             

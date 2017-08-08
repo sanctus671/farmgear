@@ -1,7 +1,7 @@
 <ion-modal-view>
 	<ion-header-bar class="bar-balanced" align-title="center">
 		<div class="modal-button" ng-click="orderModal.hide()">Close</div>            
-		<h1 class="title modal-title  title-center">Saved Order</h1>
+		<h1 class="title modal-title  title-center">{{order.name ? order.name : "Saved Order"}}</h1>
 	</ion-header-bar>
 	<ion-content >
 

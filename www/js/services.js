@@ -251,7 +251,24 @@ angular.module('app.services', [])
         });
 
         return deferred.promise;   
-    }      
+    }  
+    
+    
+    this.emailOrder = function(order){
+        var deferred = $q.defer();
+        var token = AuthService.getToken();
+        if (!token){deferred.reject("No token");} 
+        $http.post(API_URL + '/emailorder?token=' + token, order)
+        .success(function(data) {
+            deferred.resolve(data);
+        })
+        .error(function(data) {
+            if (data && data.error && data.error.status_code === 401){AuthService.logout();$state.go("login")}
+            deferred.reject(data);
+        });
+
+        return deferred.promise;   
+    }     
     
     
 })

@@ -4,10 +4,15 @@
 
         <div class="list">
 
+          <a class="item" ng-click="viewCalculator(fullOrder)" ng-if="order.order_items.length > 0">
+              <h2>Current Order</h2>
+              <p>Includes {{products.length}} product<span ng-if="products.length !== 0">s</span> with {{fullOrder.options.length}} option<span ng-if="fullOrder.options.length !== 0">s</span></p>
+          </a>             
+            
           <a class="item" ng-repeat="product in products" ng-click="viewCalculator(product)">
               <h2>{{product.name}}</h2>
-              <p>Includes {{product.options.length}} options</p>
-          </a>
+              <p>Includes {{product.options.length}} option<span ng-if="product.options.length !== 0">s</span></p>
+          </a>                      
             
           <a class="item" ng-click="viewCalculator(false)">
               <h2>Custom</h2>

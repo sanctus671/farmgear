@@ -9,7 +9,8 @@
         <div class="list">
 
           <a class="item item-icon-right" ng-repeat="order in orders" ng-click="viewOrder(order, $index)">
-              <h2>Order with {{order.order_items.length}} items totaling ${{order.total ? order.total : 0}}</h2>
+              <h2 ng-if="!order.name">Order with {{order.order_items.length}} items totaling ${{order.total ? order.total : 0}}</h2>
+              <h2 ng-if="order.name">{{order.name}}</h2>
               <p>Created {{order.created_at}}</p>
               <i class="icon ion-trash-a" ng-click="removeOrder($event, order, $index)"></i>
           </a>

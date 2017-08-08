@@ -533,6 +533,11 @@ angular.module('app.controllers', [])
         $scope.getOrderTotal();
     }
     
+    $scope.clearDiscount = function(){
+        $rootScope.discountApplied = false;  
+        $scope.getOrderTotal();
+    }    
+    
     $scope.removeItem = function(item, index){
         $rootScope.order.order_items.splice(index,1);
         $scope.$parent.calculateValves(); 
@@ -588,6 +593,33 @@ angular.module('app.controllers', [])
             element.style.height =  element.scrollHeight + "px";
     }    
     
+    $scope.preSaveOrder = function(){
+        $rootScope.order.name = "";
+        $ionicPopup.show({
+          template: '<input type="text" ng-model="order.name">',
+          title: 'Enter a name for this order',
+          subTitle: 'This will be used as a reference',
+          scope: $scope,
+          buttons: [
+            { text: 'Cancel' },
+            {
+              text: '<b>Save</b>',
+              type: 'button-balanced',
+              onTap: function(e) {
+                if (!$rootScope.order.name) {
+                  //don't allow the user to close unless he enters a name
+                  e.preventDefault();
+                } else {
+                  return $rootScope.order.name;
+                }
+              }
+            }
+          ]
+        }).then(function(name){
+            $scope.saveOrder();
+        });        
+    }
+    
     $scope.saveOrder = function(){
         var createdDate = new Date();
         $rootScope.order.created_at = createdDate.getDate() + "/" + (createdDate.getMonth() + 1) + "/" + createdDate.getFullYear() + " at " + createdDate.getHours() + ":" + createdDate.getMinutes();
@@ -612,6 +644,30 @@ angular.module('app.controllers', [])
                 }
                 }]
        })        
+    }
+    
+    $scope.emailOrder = function(){
+        var order = angular.copy($rootScope.order);
+        var createdDate = new Date();
+        order.created_at = createdDate.getDate() + "/" + (createdDate.getMonth() + 1) + "/" + createdDate.getFullYear() + " at " + createdDate.getHours() + ":" + createdDate.getMinutes();
+        order.total = $scope.getOrderTotal();
+        order.discount = $scope.discount;
+        
+        console.log(order);
+        MainService.emailOrder(order).then(function(){
+            
+            $ionicPopup.alert({
+                title: 'Order Sent',
+                template: 'Your order has been sent. You will receive it shortly.',
+                buttons:[{
+                    text: 'OK',
+                    type: 'button-balanced',
+                    onTap: function(e) {
+                      return true;
+                    }
+                    }]
+           })             
+        })
     }
     
 })
@@ -784,22 +840,30 @@ angular.module('app.controllers', [])
 .controller('CalculatorController', function($scope, $rootScope, $ionicPopup, $state, $ionicHistory, MainService, $ionicModal) {
     $scope.products = [];
     $scope.product = {};
+    $scope.fullOrder = {price:0, name:"Current Order", options:[]};
     
     $scope.getProducts = function(){
         $scope.products = [];
         var options = {};
         var products = {};
+        $scope.fullOrder = {price:0, name:"Current Order", options:[]};
         for (var index in $rootScope.order.order_items){
             var product = $rootScope.order.order_items[index];
+            
+            $scope.fullOrder.price += product.price;
+            console.log(product);
             if (!product.product_option_id){
                 product["options"] = [];
                 products[product.product_id] = product;
+                
             }
             else if (product.product_id in options){
                 options[product.product_id].push(product);
+                $scope.fullOrder.options.push(product);
             }
             else{
                 options[product.product_id] = [product];
+                $scope.fullOrder.options.push(product);
             }
         }
         
@@ -807,6 +871,13 @@ angular.module('app.controllers', [])
             products[index].options = options[index];
             $scope.products.push(products[index]);
         }
+        
+        for (var index in products){
+            if (products[index].options.length < 1){
+                $scope.products.push(products[index]);
+            }
+        }
+
     }
     
     

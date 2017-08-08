@@ -651,8 +651,8 @@ font-weight: normal;
 
 .order-actions .row.save-order{
     text-align: center;
-    display: block;
     padding: 20px;
+        display: block;
 }
 
 .order-actions .row, .order-actions .col{
@@ -676,6 +676,16 @@ font-weight: normal;
 
 #notes-input{
     min-height:100px;
+}
+
+.order-actions .button.assertive-text{
+    color:#ef473a;
+}
+
+.row.order-calculator{
+    text-align: center;
+    display: block;
+    padding: 10px;    
 }
 
 
