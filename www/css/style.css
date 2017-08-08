@@ -655,6 +655,15 @@ font-weight: normal;
         display: block;
 }
 
+.order-actions .row.extra-actions{
+    text-align: center;
+    padding: 20px;
+}
+
+.order-calculator a{
+    text-decoration:none;
+}
+
 .order-actions .row, .order-actions .col{
         padding: 0px;
 }
@@ -685,7 +694,8 @@ font-weight: normal;
 .row.order-calculator{
     text-align: center;
     display: block;
-    padding: 10px;    
+    padding: 10px;  
+    margin-top: 10px;
 }
 
 
