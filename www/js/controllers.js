@@ -652,8 +652,7 @@ angular.module('app.controllers', [])
         order.created_at = createdDate.getDate() + "/" + (createdDate.getMonth() + 1) + "/" + createdDate.getFullYear() + " at " + createdDate.getHours() + ":" + createdDate.getMinutes();
         order.total = $scope.getOrderTotal();
         order.discount = $scope.discount;
-        
-        console.log(order);
+
         MainService.emailOrder(order).then(function(){
             
             $ionicPopup.alert({
@@ -851,7 +850,7 @@ angular.module('app.controllers', [])
             var product = $rootScope.order.order_items[index];
             
             $scope.fullOrder.price += product.price;
-            console.log(product);
+
             if (!product.product_option_id){
                 product["options"] = [];
                 products[product.product_id] = product;
