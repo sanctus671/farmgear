@@ -1,4 +1,5 @@
 {
   "name": "farmgear",
-  "app_id": ""
+  "integrations": {},
+  "type": "angular"
 }

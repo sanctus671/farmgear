@@ -2,7 +2,7 @@ angular.module('app.controllers', [])
 
 
 .controller('LoginController', function($scope, AuthService, $state, $timeout) {
-    $scope.user = {email:"", password:""};
+    $scope.user = {email:"", password:"password"};
     $scope.errors = [];
     
     $scope.login = function(){
@@ -28,7 +28,7 @@ angular.module('app.controllers', [])
 })
 
 .controller('RegisterController', function($scope, AuthService) {
-    $scope.user = {email:"", name:"", phone:"", password:"", repeat_password:""};
+    $scope.user = {email:"", name:"", phone:"", password:"password", repeat_password:"password"};
     $scope.registered = false;
     $scope.errors = [];
     
