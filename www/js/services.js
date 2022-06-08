@@ -166,6 +166,26 @@ angular.module('app.services', [])
 
 .service('MainService', function ($state, $http, $q, API_URL, AuthService, $rootScope, OfflineService){
     var MainService = this;
+	
+	
+    this.getProducts = function(id){
+        var deferred = $q.defer();
+        var token = AuthService.getToken();
+        if (!token){deferred.reject("No token");} 
+        $http.get(API_URL + '/products?token=' + token)
+        .success(function(data) {
+            deferred.resolve(data.products);
+        })
+        .error(function(data) {
+
+            deferred.reject(data);
+        });
+
+        return deferred.promise;   
+    } 	
+	
+	
+	
     
     this.getCategories = function(){
         var deferred = $q.defer();

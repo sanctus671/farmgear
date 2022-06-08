@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.farmgear.fencepro" version="0.0.7" versionCode="107" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android">
+<widget id="com.farmgear.fencepro" version="0.0.8" versionCode="108" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android">
     <name>FencePro</name>
     <description>
         FencePro Professional Post Drivers
@@ -116,5 +116,4 @@
     <plugin name="ionic-plugin-keyboard" />
     <plugin name="cordova-plugin-whitelist" />
     <plugin name="cordova-plugin-network-information" spec="^2.0.2" />
-    <engine name="android" spec="^9.0.0" />
 </widget>

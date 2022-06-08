@@ -34,8 +34,6 @@
       "ionic-plugin-keyboard": {},
       "cordova-plugin-whitelist": {}
     },
-    "platforms": [
-      "android"
-    ]
+    "platforms": []
   }
 }

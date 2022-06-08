@@ -69,9 +69,26 @@ angular.module('app.controllers', [])
 
 .controller('AppController', function($scope, $timeout, AuthService, $ionicModal, $timeout, MainService, $rootScope, $stateParams, $ionicHistory, $state) {
     $scope.categories = [];
+    $scope.valveProduct = {id:2, price:450};
+	
+	
+	MainService.getProducts().then(function(data){
+
+		for (var index in data){
+			if (data[index].id === $scope.valveProduct.id){
+				$scope.valveProduct = data[index];
+				console.log($scope.valveProduct);
+				break;
+			}
+		}
+	});
+	
     
     $rootScope.order = {order_items:[]};
     
+	
+	
+	
     $scope.getCategories = function(){
         MainService.getCategories().then(function(data){
             $scope.categories = data;
@@ -81,6 +98,10 @@ angular.module('app.controllers', [])
     
     $scope.getCategories();
     
+	
+	
+	
+	
     $scope.getOrderPrice = function(){
         var price = 0;
         for (var index in $rootScope.order.order_items){
@@ -114,7 +135,7 @@ angular.module('app.controllers', [])
             }
         }
         if (valves > 0){
-            $rootScope.order.order_items.push({product_id:2, quantity:valves, price:valves*450, name:"Valves"});
+            $rootScope.order.order_items.push({product_id:2, quantity:valves, price:valves*$scope.valveProduct.price, name:"Valves"});
         } 
     }
     
