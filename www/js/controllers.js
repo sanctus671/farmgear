@@ -114,7 +114,7 @@ angular.module('app.controllers', [])
             }
         }
         if (valves > 0){
-            $rootScope.order.order_items.push({product_id:2, quantity:valves, price:valves*425, name:"Valves"});
+            $rootScope.order.order_items.push({product_id:2, quantity:valves, price:valves*450, name:"Valves"});
         } 
     }
     
