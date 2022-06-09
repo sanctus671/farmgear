@@ -77,7 +77,6 @@ angular.module('app.controllers', [])
 		for (var index in data){
 			if (data[index].id === $scope.valveProduct.id){
 				$scope.valveProduct = data[index];
-				console.log($scope.valveProduct);
 				break;
 			}
 		}
@@ -267,7 +266,7 @@ angular.module('app.controllers', [])
         for (var index in product.product_rules){
             var rule = product.product_rules[index];
             if (rule.type === "default"){
-                var requirements = rule.requirements.split(",");
+                var requirements = rule.requirements.split(",").map( Number );
                 for (var index2 in product.product_options){
                     var option = product.product_options[index2]
                     if (requirements.indexOf(option.id) > -1){
@@ -281,11 +280,13 @@ angular.module('app.controllers', [])
     }
     
     $scope.checkRequiredRules = function(product, productOption){
+
        var addedOptions = []; 
        for (var index in product.product_rules){
             var rule = product.product_rules[index];
             if (parseInt(rule.product_option_id) === parseInt(productOption.id) && rule.type === "requires"){
-                var requirements = rule.requirements.split(",");
+                var requirements = rule.requirements.split(",").map( Number );
+				
                 for (var index2 in product.product_options){
                     var option = product.product_options[index2]
                     if (requirements.indexOf(option.id) > -1 && !$scope.selectedOptions[option.name]){
@@ -320,8 +321,12 @@ angular.module('app.controllers', [])
     $scope.checkLimitRules = function(product, lastOption){
         for (var index in product.product_rules){
             var rule = product.product_rules[index];
+			
+	
+			
+			
             if (rule.type === "limit"){
-                var requirements = rule.requirements.split(",");
+                var requirements = rule.requirements.split(",").map( Number );
                 var options = [];
                 //check if more than one of the requirements is added
                 for (var index2 in product.product_options){
@@ -330,6 +335,7 @@ angular.module('app.controllers', [])
                         options.push(angular.copy(option));
                     }
                 }
+	
                 
                 if (options.length > 1){
                     for (var index in options){
@@ -527,6 +533,9 @@ angular.module('app.controllers', [])
     
     
     $scope.getOrderTotal = function(){
+		
+		
+		
         var price = 0, discount = 0;
         $scope.discount = 0;
         for (var index in $rootScope.order.order_items){

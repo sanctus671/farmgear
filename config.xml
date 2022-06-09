@@ -116,4 +116,5 @@
     <plugin name="ionic-plugin-keyboard" />
     <plugin name="cordova-plugin-whitelist" />
     <plugin name="cordova-plugin-network-information" spec="^2.0.2" />
+    <engine name="android" spec="^9.0.0" />
 </widget>
