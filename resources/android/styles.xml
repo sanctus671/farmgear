@@ -1,0 +1,35 @@
+<resources>
+    <color name="primaryColor">#00561d</color>
+    <color name="primaryColorDark">#003c14</color>
+    <color name="whiteColor">#FFFFFF</color>
+    <color name="grayColor">#EEEEEE</color>
+    <color name="transaprentColor">#00000000</color>
+    <style name="farmgearTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <!-- on startup the background and app-name is shown, we use the same color to see just background.. -->
+        <item name="android:textColorPrimary">@color/primaryColorDark</item>
+        
+        <!-- native spinners etc are derived from this -->
+        <item name="android:colorAccent">@color/primaryColor</item>
+        
+        
+        <item name="android:statusBarColor">@color/primaryColorDark</item>
+
+        <!-- date- and timepickers need their own themes -->
+        <item name="android:datePickerDialogTheme">@style/MyPickerDialogTheme</item>
+        <item name="android:timePickerDialogTheme">@style/MyPickerDialogTheme</item>
+    </style>
+
+    <style name="MyPickerDialogTheme" parent="android:Theme.Material.Light.Dialog">
+        <item name="android:colorAccent">@color/primaryColor</item>
+    </style>
+    
+    
+    <style name="SplashScreenStyle">
+        <item name="android:windowBackground">@color/transaprentColor</item>
+        <item name="android:colorBackground">@color/transaprentColor</item>   
+        <item name="android:statusBarColor">@color/primaryColorDark</item>    
+    </style>
+    
+
+    <!-- see https://stackoverflow.com/a/29014475 -->
+</resources>
